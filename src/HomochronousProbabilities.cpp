@@ -1,0 +1,98 @@
+#include <Rcpp.h>
+using namespace Rcpp;
+
+//' Calculate coalescent probabilities (homochronous)
+//'
+//' Calculate the probability of i lineages coalescing down to j <= i lineages
+//' in time dt in the homochronous setting.
+//'
+//' @param i Integer value for the starting number of lineages.
+//' @param j Integer value for the final number of lineages.
+//' @param dt Time period over which coalescences can occur.
+//' @param Ne Effective population size.
+//' @export
+// [[Rcpp::export]]
+double homochronous_probability(int i, int j, double dt, double Ne) {
+
+  // Counters
+  int k, l;
+
+  // Double copies of counters
+  double dk, dl;
+
+  // Total and incremental probabilities
+  double prob_total, prob_increment;
+
+  if (j == 1) {
+
+    // Initialise total probability
+    prob_total = 1.0;
+
+    for (k = 2; k <= i; ++k) {
+
+      dk = double(k);
+
+      // Initialise probability increment
+      prob_increment = 1.0;
+
+      for (l = 2; l <= i; ++l) {
+
+        dl = double(l);
+
+        // Calculate coefficients
+        if (l != k) {
+
+          prob_increment *= (dl * (dl - 1.0)) /
+            (dl * (dl - 1.0) - dk * (dk - 1.0));
+
+        }
+
+      }
+
+      // Calculate exponential
+      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * Ne)) * dt);
+
+      // Update total probability
+      prob_total -= prob_increment;
+
+    }
+
+  } else{
+
+    // Initialise total probability
+    prob_total = 0.0;
+
+    for (k = j; k <= i; ++k) {
+
+      dk = double(k);
+
+      // Initialise probability increment
+      prob_increment = (dk * (dk - 1.0)) / (double(j) * (double(j) - 1.0));
+
+      for (l = j; l <= i; ++l) {
+
+        dl = double(l);
+
+        // Calculate coefficients
+        if (l != k) {
+
+          prob_increment *= (dl * (dl - 1.0)) /
+            (dl * (dl - 1.0) - dk * (dk - 1.0));
+
+        }
+
+      }
+
+      // Calculate exponential
+      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * Ne)) * dt);
+
+      // Update total probability
+      prob_total += prob_increment;
+
+    }
+
+  }
+
+  return prob_total;
+
+}
