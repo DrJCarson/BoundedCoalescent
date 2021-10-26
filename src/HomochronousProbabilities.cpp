@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-using namespace Rcpp;
+// [[Rcpp::interfaces(r, cpp)]]
 
 //' Calculate coalescent probabilities (homochronous)
 //'
@@ -22,6 +22,13 @@ double homochronous_probability(int i, int j, double dt, double Ne) {
 
   // Total and incremental probabilities
   double prob_total, prob_increment;
+
+  // Check that inputs are valid
+  if (i <= 0 || j <= 0 || i < j || dt < 0 || Ne <= 0) {
+
+    return 0.0;
+
+  }
 
   if (j == 1) {
 
