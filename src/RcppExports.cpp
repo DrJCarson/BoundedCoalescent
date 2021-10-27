@@ -11,46 +11,46 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // backward_sampler_c
-Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double Ne, double bound, int bound_size);
-RcppExport SEXP _BoundedCoalescent_backward_sampler_c(SEXP forward_probsSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP NeSEXP, SEXP boundSEXP, SEXP bound_sizeSEXP) {
+Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, int bound_size);
+RcppExport SEXP _BoundedCoalescent_backward_sampler_c(SEXP forward_probsSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP bound_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type forward_probs(forward_probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type times(timesSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type leaves(leavesSEXP);
-    Rcpp::traits::input_parameter< double >::type Ne(NeSEXP);
+    Rcpp::traits::input_parameter< double >::type ne(neSEXP);
     Rcpp::traits::input_parameter< double >::type bound(boundSEXP);
     Rcpp::traits::input_parameter< int >::type bound_size(bound_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(backward_sampler_c(forward_probs, times, leaves, Ne, bound, bound_size));
+    rcpp_result_gen = Rcpp::wrap(backward_sampler_c(forward_probs, times, leaves, ne, bound, bound_size));
     return rcpp_result_gen;
 END_RCPP
 }
 // forward_algorithm_c
-Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double Ne, double bound);
-RcppExport SEXP _BoundedCoalescent_forward_algorithm_c(SEXP timesSEXP, SEXP leavesSEXP, SEXP NeSEXP, SEXP boundSEXP) {
+Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound);
+RcppExport SEXP _BoundedCoalescent_forward_algorithm_c(SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type times(timesSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type leaves(leavesSEXP);
-    Rcpp::traits::input_parameter< double >::type Ne(NeSEXP);
+    Rcpp::traits::input_parameter< double >::type ne(neSEXP);
     Rcpp::traits::input_parameter< double >::type bound(boundSEXP);
-    rcpp_result_gen = Rcpp::wrap(forward_algorithm_c(times, leaves, Ne, bound));
+    rcpp_result_gen = Rcpp::wrap(forward_algorithm_c(times, leaves, ne, bound));
     return rcpp_result_gen;
 END_RCPP
 }
 // homochronous_probability
-double homochronous_probability(int i, int j, double dt, double Ne);
-RcppExport SEXP _BoundedCoalescent_homochronous_probability(SEXP iSEXP, SEXP jSEXP, SEXP dtSEXP, SEXP NeSEXP) {
+double homochronous_probability(int i, int j, double dt, double ne);
+RcppExport SEXP _BoundedCoalescent_homochronous_probability(SEXP iSEXP, SEXP jSEXP, SEXP dtSEXP, SEXP neSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type i(iSEXP);
     Rcpp::traits::input_parameter< int >::type j(jSEXP);
     Rcpp::traits::input_parameter< double >::type dt(dtSEXP);
-    Rcpp::traits::input_parameter< double >::type Ne(NeSEXP);
-    rcpp_result_gen = Rcpp::wrap(homochronous_probability(i, j, dt, Ne));
+    Rcpp::traits::input_parameter< double >::type ne(neSEXP);
+    rcpp_result_gen = Rcpp::wrap(homochronous_probability(i, j, dt, ne));
     return rcpp_result_gen;
 END_RCPP
 }

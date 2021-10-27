@@ -4,7 +4,7 @@
 \alias{backward_sampler_c}
 \title{Backward Sampler for the Bounded Coalescent}
 \usage{
-backward_sampler_c(forward_probs, times, leaves, Ne, bound, bound_size = 1L)
+backward_sampler_c(forward_probs, times, leaves, ne, bound, bound_size = 1L)
 }
 \arguments{
 \item{forward_probs}{2D array of probabilities from the forward algorithm.}
@@ -13,7 +13,7 @@ backward_sampler_c(forward_probs, times, leaves, Ne, bound, bound_size = 1L)
 
 \item{leaves}{Number of leaves taken at each sampling time.}
 
-\item{Ne}{Effective population size.}
+\item{ne}{Effective population size.}
 
 \item{bound}{Bound time.}
 

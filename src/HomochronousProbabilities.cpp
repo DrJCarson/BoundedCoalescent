@@ -8,10 +8,10 @@
 //' @param i Integer value for the starting number of lineages.
 //' @param j Integer value for the final number of lineages.
 //' @param dt Time period over which coalescences can occur.
-//' @param Ne Effective population size.
+//' @param ne Effective population size.
 //' @export
 // [[Rcpp::export]]
-double homochronous_probability(int i, int j, double dt, double Ne) {
+double homochronous_probability(int i, int j, double dt, double ne) {
 
   // Counters
   int k, l;
@@ -23,7 +23,7 @@ double homochronous_probability(int i, int j, double dt, double Ne) {
   double prob_total, prob_increment;
 
   // Check that inputs are valid
-  if (i <= 0 || j <= 0 || i < j || dt < 0 || Ne <= 0) {
+  if (i <= 0 || j <= 0 || i < j || dt < 0 || ne <= 0) {
 
     return 0.0;
 
@@ -56,7 +56,7 @@ double homochronous_probability(int i, int j, double dt, double Ne) {
       }
 
       // Calculate exponential
-      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * Ne)) * dt);
+      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
 
       // Update total probability
       prob_total -= prob_increment;
@@ -90,7 +90,7 @@ double homochronous_probability(int i, int j, double dt, double Ne) {
       }
 
       // Calculate exponential
-      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * Ne)) * dt);
+      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
 
       // Update total probability
       prob_total += prob_increment;

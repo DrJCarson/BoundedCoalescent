@@ -49,13 +49,13 @@ Rcpp::CharacterVector forward_algorithm_rownames(int total_leaves) {
 //'
 //' @param times Vector of ordered sampling times for leaves.
 //' @param leaves Number of leaves taken at each sampling time.
-//' @param Ne Effective population size.
+//' @param ne Effective population size.
 //' @param bound Bound time.
 //' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
                              Rcpp::IntegerVector leaves,
-                             double Ne,
+                             double ne,
                              double bound) {
 
   // Total the leaves
@@ -85,7 +85,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
 
       for (i = leaves(k); i <= sum_leaves; ++i) {
 
-        transition_prob = homochronous_probability(i, j, dt, Ne);
+        transition_prob = homochronous_probability(i, j, dt, ne);
 
         forward_probs(j + leaves(k - 1) - 1, k) += transition_prob *
           forward_probs(i - 1, k + 1);
@@ -106,7 +106,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
 
     for (i = leaves(0); i <= sum_leaves; ++i) {
 
-      transition_prob = homochronous_probability(i, j, dt, Ne);
+      transition_prob = homochronous_probability(i, j, dt, ne);
 
       forward_probs(j - 1, 0) += transition_prob * forward_probs(i - 1, 1);
 

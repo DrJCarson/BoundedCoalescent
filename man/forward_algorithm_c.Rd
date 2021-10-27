@@ -4,14 +4,14 @@
 \alias{forward_algorithm_c}
 \title{Forward Algorithm for the Bounded Coalescent}
 \usage{
-forward_algorithm_c(times, leaves, Ne, bound)
+forward_algorithm_c(times, leaves, ne, bound)
 }
 \arguments{
 \item{times}{Vector of ordered sampling times for leaves.}
 
 \item{leaves}{Number of leaves taken at each sampling time.}
 
-\item{Ne}{Effective population size.}
+\item{ne}{Effective population size.}
 
 \item{bound}{Bound time.}
 }

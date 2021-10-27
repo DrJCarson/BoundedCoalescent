@@ -9,12 +9,12 @@
 #' @param forward_probs 2D array of probabilities from the forward algorithm.
 #' @param times Vector of ordered sampling times for leaves.
 #' @param leaves Number of leaves taken at each sampling time.
-#' @param Ne Effective population size.
+#' @param ne Effective population size.
 #' @param bound Bound time.
 #' @param bound_size Number of lineages at the bound (default 1).
 #' @export
-backward_sampler_c <- function(forward_probs, times, leaves, Ne, bound, bound_size = 1L) {
-    .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, Ne, bound, bound_size)
+backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, bound_size = 1L) {
+    .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, bound_size)
 }
 
 #' Forward Algorithm for the Bounded Coalescent
@@ -23,11 +23,11 @@ backward_sampler_c <- function(forward_probs, times, leaves, Ne, bound, bound_si
 #'
 #' @param times Vector of ordered sampling times for leaves.
 #' @param leaves Number of leaves taken at each sampling time.
-#' @param Ne Effective population size.
+#' @param ne Effective population size.
 #' @param bound Bound time.
 #' @export
-forward_algorithm_c <- function(times, leaves, Ne, bound) {
-    .Call(`_BoundedCoalescent_forward_algorithm_c`, times, leaves, Ne, bound)
+forward_algorithm_c <- function(times, leaves, ne, bound) {
+    .Call(`_BoundedCoalescent_forward_algorithm_c`, times, leaves, ne, bound)
 }
 
 #' Calculate coalescent probabilities (homochronous)
@@ -38,9 +38,9 @@ forward_algorithm_c <- function(times, leaves, Ne, bound) {
 #' @param i Integer value for the starting number of lineages.
 #' @param j Integer value for the final number of lineages.
 #' @param dt Time period over which coalescences can occur.
-#' @param Ne Effective population size.
+#' @param ne Effective population size.
 #' @export
-homochronous_probability <- function(i, j, dt, Ne) {
-    .Call(`_BoundedCoalescent_homochronous_probability`, i, j, dt, Ne)
+homochronous_probability <- function(i, j, dt, ne) {
+    .Call(`_BoundedCoalescent_homochronous_probability`, i, j, dt, ne)
 }
 

@@ -4,7 +4,7 @@
 \alias{homochronous_probability}
 \title{Calculate coalescent probabilities (homochronous)}
 \usage{
-homochronous_probability(i, j, dt, Ne)
+homochronous_probability(i, j, dt, ne)
 }
 \arguments{
 \item{i}{Integer value for the starting number of lineages.}
@@ -13,7 +13,7 @@ homochronous_probability(i, j, dt, Ne)
 
 \item{dt}{Time period over which coalescences can occur.}
 
-\item{Ne}{Effective population size.}
+\item{ne}{Effective population size.}
 }
 \description{
 Calculate the probability of i lineages coalescing down to j <= i lineages

@@ -10,7 +10,7 @@
 //' @param forward_probs 2D array of probabilities from the forward algorithm.
 //' @param times Vector of ordered sampling times for leaves.
 //' @param leaves Number of leaves taken at each sampling time.
-//' @param Ne Effective population size.
+//' @param ne Effective population size.
 //' @param bound Bound time.
 //' @param bound_size Number of lineages at the bound (default 1).
 //' @export
@@ -18,7 +18,7 @@
 Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
                               Rcpp::NumericVector times,
                               Rcpp::IntegerVector leaves,
-                              double Ne,
+                              double ne,
                               double bound,
                               int bound_size = 1) {
 
@@ -58,7 +58,7 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
   // Evaluate smoothed probabilities, sample, and update likelihood
   for (i = 1; i <= total_leaves; ++i) {
 
-    transition_prob = homochronous_probability(i, lineages(0), dt, Ne);
+    transition_prob = homochronous_probability(i, lineages(0), dt, ne);
 
     smoothed_probs(i - 1) = (transition_prob * forward_probs(i - 1, 1)) /
       forward_probs(lineages(0) - 1, 0);
@@ -92,7 +92,7 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
       // Number of lineages before leaves are added
       j = lineages(k) - leaves(k - 1);
 
-      transition_prob = homochronous_probability(i, j, dt, Ne);
+      transition_prob = homochronous_probability(i, j, dt, ne);
 
       smoothed_probs(i - 1) = (transition_prob * forward_probs(i - 1, k + 1)) /
         forward_probs(lineages(k) - 1, k);
