@@ -1,6 +1,5 @@
 #include <Rcpp.h>
 #include "HomochronousProbabilities.h"
-// [[Rcpp::interfaces(r, cpp)]]
 
 // Construct vector of column names for the forward probabilities
 Rcpp::CharacterVector forward_algorithm_colnames(Rcpp::NumericVector times) {
@@ -105,7 +104,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
 
   for (j = 1; j <= sum_leaves; ++j) {
 
-    for (i = leaves(1); i <= sum_leaves; ++i) {
+    for (i = leaves(0); i <= sum_leaves; ++i) {
 
       transition_prob = homochronous_probability(i, j, dt, Ne);
 

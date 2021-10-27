@@ -1,5 +1,4 @@
 #include <Rcpp.h>
-// [[Rcpp::interfaces(r, cpp)]]
 
 //' Calculate coalescent probabilities (homochronous)
 //'
