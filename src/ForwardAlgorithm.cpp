@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "HomochronousProbabilities.h"
+#include "ForwardAlgorithm.h"
 
 // Construct vector of column names for the forward probabilities
 Rcpp::CharacterVector forward_algorithm_colnames(Rcpp::NumericVector times) {
@@ -43,16 +44,7 @@ Rcpp::CharacterVector forward_algorithm_rownames(int total_leaves) {
 
 }
 
-//' Forward Algorithm for the Bounded Coalescent
-//'
-//' Calculate the forward probabilities for the bounded coalescent.
-//'
-//' @param times Vector of ordered sampling times for leaves.
-//' @param leaves Number of leaves taken at each sampling time.
-//' @param ne Effective population size.
-//' @param bound Bound time.
-//' @export
-// [[Rcpp::export]]
+// Forward algorithm for the bounded coalescent
 Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
                              Rcpp::IntegerVector leaves,
                              double ne,
@@ -83,7 +75,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
 
     for (j = 1; j <= sum_leaves; ++j) {
 
-      for (i = leaves(k); i <= sum_leaves; ++i) {
+      for (i = 1; i <= sum_leaves; ++i) {
 
         transition_prob = homochronous_probability(i, j, dt, ne);
 
@@ -104,7 +96,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
 
   for (j = 1; j <= sum_leaves; ++j) {
 
-    for (i = leaves(0); i <= sum_leaves; ++i) {
+    for (i = 1; i <= sum_leaves; ++i) {
 
       transition_prob = homochronous_probability(i, j, dt, ne);
 
@@ -117,3 +109,7 @@ Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
   return forward_probs;
 
 }
+
+
+
+
