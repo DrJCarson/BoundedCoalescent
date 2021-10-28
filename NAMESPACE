@@ -2,6 +2,7 @@
 
 export(backward_sampler_c)
 export(block_coalescences)
+export(block_coalescences_c)
 export(forward_algorithm_c)
 export(homochronous_probability)
 importFrom(Rcpp,sourceCpp)

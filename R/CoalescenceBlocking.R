@@ -19,8 +19,12 @@ block_coalescences <- function(sample, times, leaves, bound) {
   # Upper bound time for the block
   upper_const <- times[1:length(times)]
 
+  # Number of lineages that can coalesce at the start of the block
+  initial_lineages <- sample[2:(length(times) + 1)]
+
   return(data.frame("coalescences" = coalescences,
                     "time_low" = lower_const,
-                    "time_upp" = upper_const))
+                    "time_upp" = upper_const,
+                    "lineages_upp" = initial_lineages))
 
 }
