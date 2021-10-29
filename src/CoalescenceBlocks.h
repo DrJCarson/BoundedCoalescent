@@ -48,4 +48,15 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
                                          double ne,
                                          double bound);
 
+//' Sample a coalescence time within a specified interval
+//'
+//' @param time_lower Lower bound time of the interval.
+//' @param time_upper Upper bound time of the interval.
+//' @param lineages Starting number of lineages.
+//' @param ne Effective population size.
+//' @export
+// [[Rcpp::export]]
+Rcpp::List sample_coalescence_time_c(double time_lower, double time_upper,
+                                     int lineages, double ne);
+
 #endif

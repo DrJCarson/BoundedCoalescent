@@ -183,3 +183,33 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
   return out;
 
 }
+
+
+Rcpp::List sample_coalescence_time_c(double time_lower, double time_upper,
+                                     int lineages, double ne) {
+
+  // Random number for sampling
+  double u = R::runif(0.0, 1.0);
+
+  //Double copy of starting lineages
+  double dl = double(lineages);
+
+  // Normalising constant
+  double z = (ne / (dl - 1.0)) *
+    (std::exp(((dl - 1.0) / ne) * time_upper) -
+    std::exp(((dl - 1.0) / ne) * time_lower));
+
+  // Time of coalescence
+  double coalescence_time = (ne / (dl - 1.0)) *
+    std::log(std::exp(((dl - 1.0) / ne) * time_upper) -
+    ((dl - 1.0) / ne) * z * u);
+
+  double likelihood = (1.0 / z) *
+    std::exp(((dl - 1.0) / ne) * coalescence_time);
+
+  Rcpp::List out = Rcpp::List::create(Rcpp::Named("time") = coalescence_time,
+                                      Rcpp::Named("likelihood") = likelihood);
+
+  return out;
+
+}

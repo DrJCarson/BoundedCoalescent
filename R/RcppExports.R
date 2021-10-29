@@ -30,7 +30,11 @@ block_coalescences_c <- function(sample, times, leaves, bound) {
 
 #' Separate coalescences in a block
 #'
-#'
+#' @param coalescences Number of coalescences in block.
+#' @param time_lower Lower bound time of the block.
+#' @param time_upper Upper bound time of the block.
+#' @param lineages_upper Number of lineages at the start of the block.
+#' @param ne Effective population size.
 #' @export
 separate_coalescences_c <- function(coalescences, time_lower, time_upper, lineages_upper, ne) {
     .Call(`_BoundedCoalescent_separate_coalescences_c`, coalescences, time_lower, time_upper, lineages_upper, ne)
@@ -46,6 +50,17 @@ separate_coalescences_c <- function(coalescences, time_lower, time_upper, lineag
 #' @export
 constrain_coalescences_c <- function(sample, times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound)
+}
+
+#' Sample a coalescence time within a specified interval
+#'
+#' @param time_lower Lower bound time of the interval.
+#' @param time_upper Upper bound time of the interval.
+#' @param lineages Starting number of lineages.
+#' @param ne Effective population size.
+#' @export
+sample_coalescence_time_c <- function(time_lower, time_upper, lineages, ne) {
+    .Call(`_BoundedCoalescent_sample_coalescence_time_c`, time_lower, time_upper, lineages, ne)
 }
 
 #' Forward Algorithm for the Bounded Coalescent

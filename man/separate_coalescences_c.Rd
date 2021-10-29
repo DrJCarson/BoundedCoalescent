@@ -12,6 +12,17 @@ separate_coalescences_c(
   ne
 )
 }
+\arguments{
+\item{coalescences}{Number of coalescences in block.}
+
+\item{time_lower}{Lower bound time of the block.}
+
+\item{time_upper}{Upper bound time of the block.}
+
+\item{lineages_upper}{Number of lineages at the start of the block.}
+
+\item{ne}{Effective population size.}
+}
 \description{
 Separate coalescences in a block
 }
