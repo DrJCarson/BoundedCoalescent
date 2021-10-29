@@ -102,3 +102,15 @@ homochronous_probability <- function(i, j, dt, ne) {
     .Call(`_BoundedCoalescent_homochronous_probability`, i, j, dt, ne)
 }
 
+#' Calculate the likelihood under the bounded coalescence
+#'
+#' @param leaf_times Times that leaves are added.
+#' @param leaves Number of leaves at each time point.
+#' @param coalescence_times Times of coalescences.
+#' @param ne Effective population size.
+#' @param bound Bound time.
+#' @export
+bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne, bound) {
+    .Call(`_BoundedCoalescent_bounded_times_likelihood_c`, leaf_times, leaves, coalescence_times, ne, bound)
+}
+
