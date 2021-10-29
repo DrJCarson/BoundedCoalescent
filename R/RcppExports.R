@@ -17,6 +17,17 @@ backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, bound_si
     .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, bound_size)
 }
 
+#' Determine blocks of coalescent events from backward sample
+#'
+#' @param sample Sample of number of lineages from backward sampler
+#' @param times Vector of ordered sampling times for leaves.
+#' @param leaves Number of leaves taken at each sampling time.
+#' @param bound Bound time.
+#' @export
+block_coalescences_c <- function(sample, times, leaves, bound) {
+    .Call(`_BoundedCoalescent_block_coalescences_c`, sample, times, leaves, bound)
+}
+
 #' Separate coalescences in a block
 #'
 #'
@@ -35,17 +46,6 @@ separate_coalescences_c <- function(coalescences, time_lower, time_upper, lineag
 #' @export
 constrain_coalescences_c <- function(sample, times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound)
-}
-
-#' Determine blocks of coalescent events from backward sample
-#'
-#' @param sample Sample of number of lineages from backward sampler
-#' @param times Vector of ordered sampling times for leaves.
-#' @param leaves Number of leaves taken at each sampling time.
-#' @param bound Bound time.
-#' @export
-block_coalescences_c <- function(sample, times, leaves, bound) {
-    .Call(`_BoundedCoalescent_block_coalescences_c`, sample, times, leaves, bound)
 }
 
 #' Forward Algorithm for the Bounded Coalescent

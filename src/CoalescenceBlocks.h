@@ -22,7 +22,7 @@ Rcpp::DataFrame block_coalescences_c(Rcpp::IntegerVector sample,
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::DataFrame separate_coalescences_c(int coalescences,
+Rcpp::List separate_coalescences_c(int coalescences,
                                         double time_lower,
                                         double time_upper,
                                         int lineages_upper,
@@ -38,7 +38,7 @@ Rcpp::DataFrame separate_coalescences_c(int coalescences,
 //' @param bound Bound time.
 //' @export
 // [[Rcpp::export]]
-Rcpp::DataFrame constrain_coalescences_c(Rcpp::IntegerVector sample,
+Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
                                          Rcpp::NumericVector times,
                                          Rcpp::IntegerVector leaves,
                                          double ne,
