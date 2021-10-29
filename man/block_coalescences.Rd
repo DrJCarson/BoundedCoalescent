@@ -14,8 +14,6 @@ block_coalescences(sample, times, leaves, bound)
 \item{leaves}{Number of leaves taken at each sampling time.}
 
 \item{bound}{Bound time.}
-
-\item{ne}{Effective population size.}
 }
 \description{
 Determine blocks of coalescent events from backward sample

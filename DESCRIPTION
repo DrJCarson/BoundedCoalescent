@@ -1,11 +1,11 @@
 Package: BoundedCoalescent
-Title: Sampling and Likelihood Estimation for the Bounded Coalescent
+Title: Sampling and Probability Estimation for the Bounded Coalescent
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Jake",
            family = "Carson",
            role = c("aut", "cre"),
-           email = "jake.carsont@warwick.ac.uk",
+           email = "jake.carson@warwick.ac.uk",
            comment = c(ORCID = "0000-0002-7896-0971"))
 Description: Methodology for sampling trees under the bounded coalescent and 
   estimating the associated probability densities.

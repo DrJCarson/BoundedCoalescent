@@ -3,7 +3,6 @@
 #' @param sample Sample of number of lineages from backward sampler
 #' @param times Vector of ordered sampling times for leaves.
 #' @param leaves Number of leaves taken at each sampling time.
-#' @param ne Effective population size.
 #' @param bound Bound time.
 #' @export
 block_coalescences <- function(sample, times, leaves, bound) {
