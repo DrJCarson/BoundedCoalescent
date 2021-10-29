@@ -19,7 +19,11 @@ Rcpp::DataFrame block_coalescences_c(Rcpp::IntegerVector sample,
 
 //' Separate coalescences in a block
 //'
-//'
+//' @param coalescences Number of coalescences in block.
+//' @param time_lower Lower bound time of the block.
+//' @param time_upper Upper bound time of the block.
+//' @param lineages_upper Number of lineages at the start of the block.
+//' @param ne Effective population size.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List separate_coalescences_c(int coalescences,
