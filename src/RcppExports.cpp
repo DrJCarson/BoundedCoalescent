@@ -27,7 +27,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // separate_coalescences_c
-Rcpp::NumericVector separate_coalescences_c(int coalescences, double time_lower, double time_upper, int lineages_upper, double ne);
+Rcpp::IntegerVector separate_coalescences_c(int coalescences, double time_lower, double time_upper, int lineages_upper, double ne);
 RcppExport SEXP _BoundedCoalescent_separate_coalescences_c(SEXP coalescencesSEXP, SEXP time_lowerSEXP, SEXP time_upperSEXP, SEXP lineages_upperSEXP, SEXP neSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

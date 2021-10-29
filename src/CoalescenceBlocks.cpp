@@ -49,3 +49,123 @@ Rcpp::DataFrame block_coalescences_c(Rcpp::IntegerVector sample,
 }
 
 
+
+Rcpp::DataFrame separate_coalescences_c(int coalescences,
+                                            double time_lower,
+                                            double time_upper,
+                                            int lineages_upper,
+                                            double ne) {
+
+  // Check for interrupt
+  Rcpp::checkUserInterrupt();
+
+  // Counter
+  int k;
+
+  // Likelihood increment
+  double sub_likelihood = 1.0;
+
+  // Define new partition
+  Rcpp::NumericVector sub_times(coalescences);
+  sub_times(coalescences - 1) = time_upper;
+
+  // Set leaf additions
+  Rcpp::IntegerVector sub_leaves(coalescences);
+  sub_leaves(coalescences - 1) = lineages_upper;
+
+  for(k = coalescences - 2; k >= 0; --k){
+
+    sub_times(k) = sub_times(k + 1) -
+      (time_upper - time_lower) / double(coalescences);
+
+    sub_leaves(k) = 0;
+
+  }
+
+  // Set new bound and size
+  double sub_bound = time_lower;
+  int sub_bound_size = lineages_upper - coalescences;
+
+  // Forward algorithm for the new partition
+  Rcpp::NumericVector sub_probs =
+    forward_algorithm_c(sub_times, sub_leaves, ne, sub_bound);
+
+  Rcpp::List sub_bs = backward_sampler_c(sub_probs, sub_times, sub_leaves, ne,
+                                         sub_bound, sub_bound_size);
+
+  Rcpp::IntegerVector sub_sample = sub_bs["sample"];
+  sub_likelihood *= double(sub_bs["likelihood"]);
+
+  Rcpp::DataFrame out = constrain_coalescences_c(sub_sample, sub_times,
+                                                 sub_leaves, ne, sub_bound);
+
+  return out;
+
+}
+
+
+
+Rcpp::DataFrame constrain_coalescences_c(Rcpp::IntegerVector sample,
+                                         Rcpp::NumericVector times,
+                                         Rcpp::IntegerVector leaves,
+                                         double ne,
+                                         double bound) {
+
+  // Total the leaves
+  int total_leaves = Rcpp::sum(leaves);
+
+  // Interval limits
+  Rcpp::NumericVector const_lower(total_leaves - 1);
+  Rcpp::NumericVector const_upper(total_leaves - 1);
+
+  // Counters
+  int k, m, c = 0;
+
+  // Initial blocks
+  Rcpp::DataFrame blocks = block_coalescences_c(sample, times, leaves, bound);
+  Rcpp::NumericVector coalescences = blocks["coalescences"];
+  Rcpp::NumericVector block_lower = blocks["time_lower"];
+  Rcpp::NumericVector block_upper = blocks["time_upper"];
+  Rcpp::NumericVector lineages_upper = blocks["lineages_upper"];
+
+  // Sub-interval information
+  Rcpp::DataFrame sub_intervals;
+  Rcpp::NumericVector sub_lower, sub_upper;
+
+  // Iterate through blocks
+  for (k = 0; k < times.size(); ++k) {
+
+    if (coalescences(k) == 1) {
+
+      const_lower(c) = block_lower(k);
+      const_upper(c) = block_upper(k);
+      ++c;
+
+    } else if(coalescences(k) > 1) {
+
+      sub_intervals = separate_coalescences_c(coalescences(k), block_lower(k),
+                                              block_upper(k), lineages_upper(k),
+                                              ne);
+
+      sub_lower = sub_intervals["time_lower"];
+      sub_upper = sub_intervals["time_upper"];
+
+      for (m = 0; m < coalescences(k); ++m) {
+
+        const_lower(c) = sub_lower(m);
+        const_upper(c) = sub_upper(m);
+        ++c;
+
+      }
+
+    }
+
+  }
+
+  Rcpp::DataFrame out =
+    Rcpp::DataFrame::create(Rcpp::Named("time_lower") = const_lower,
+                            Rcpp::Named("time_upper") = const_upper);
+
+  return out;
+
+}
