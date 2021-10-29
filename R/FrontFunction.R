@@ -52,6 +52,8 @@ bounded_times_sample <- function(t, l, ne, b, nsam = 1) {
 
   full_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
 
+  return(full_sample)
+
 }
 
 
@@ -108,5 +110,7 @@ bounded_times_likelihood <- function(t, l, c, ne, b) {
   ordered_l <- l[leaf_order]
 
   likelihood <- bounded_times_likelihood_c(ordered_t, ordered_l, sort(c), ne, b)
+
+  return(likelihood)
 
 }
