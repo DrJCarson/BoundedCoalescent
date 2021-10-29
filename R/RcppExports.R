@@ -83,9 +83,8 @@ forward_algorithm_c <- function(times, leaves, ne, bound) {
 #' @param ne Effective population size.
 #' @param bound Bound time.
 #' @param nsam Number of samples (deafault 1).
-#' @export
-sample_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
-    .Call(`_BoundedCoalescent_sample_bounded_times`, times, leaves, ne, bound, nsam)
+sample_bounded_times_c <- function(times, leaves, ne, bound, nsam = 1L) {
+    .Call(`_BoundedCoalescent_sample_bounded_times_c`, times, leaves, ne, bound, nsam)
 }
 
 #' Calculate coalescent probabilities (homochronous)
@@ -109,7 +108,6 @@ homochronous_probability <- function(i, j, dt, ne) {
 #' @param coalescence_times Times of coalescences.
 #' @param ne Effective population size.
 #' @param bound Bound time.
-#' @export
 bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne, bound) {
     .Call(`_BoundedCoalescent_bounded_times_likelihood_c`, leaf_times, leaves, coalescence_times, ne, bound)
 }

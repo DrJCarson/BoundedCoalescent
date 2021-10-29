@@ -5,7 +5,7 @@
 #include "CoalescenceBlocks.h"
 #include "FullSampling.h"
 
-Rcpp::List sample_bounded_times(Rcpp::NumericVector times,
+Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
                                 Rcpp::IntegerVector leaves,
                                 double ne,
                                 double bound,

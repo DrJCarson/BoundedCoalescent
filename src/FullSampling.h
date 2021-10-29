@@ -9,9 +9,8 @@
 //' @param ne Effective population size.
 //' @param bound Bound time.
 //' @param nsam Number of samples (deafault 1).
-//' @export
 // [[Rcpp::export]]
-Rcpp::List sample_bounded_times(Rcpp::NumericVector times,
+Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
                                 Rcpp::IntegerVector leaves,
                                 double ne,
                                 double bound,

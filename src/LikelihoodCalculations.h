@@ -10,7 +10,6 @@
 //' @param coalescence_times Times of coalescences.
 //' @param ne Effective population size.
 //' @param bound Bound time.
-//' @export
 // [[Rcpp::export]]
 double bounded_times_likelihood_c(Rcpp::NumericVector leaf_times,
                                   Rcpp::IntegerVector leaves,
