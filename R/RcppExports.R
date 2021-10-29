@@ -76,6 +76,18 @@ forward_algorithm_c <- function(times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_forward_algorithm_c`, times, leaves, ne, bound)
 }
 
+#' Sample coalescence times for the bounded coalescenct
+#'
+#' @param times Vector of ordered sampling times for leaves.
+#' @param leaves Number of leaves taken at each sampling time.
+#' @param ne Effective population size.
+#' @param bound Bound time.
+#' @param nsam Number of samples (deafault 1).
+#' @export
+sample_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
+    .Call(`_BoundedCoalescent_sample_bounded_times`, times, leaves, ne, bound, nsam)
+}
+
 #' Calculate coalescent probabilities (homochronous)
 #'
 #' Calculate the probability of i lineages coalescing down to j <= i lineages

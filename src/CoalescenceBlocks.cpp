@@ -101,11 +101,13 @@ Rcpp::List separate_coalescences_c(int coalescences,
 
   Rcpp::NumericVector sub_lower = sub_const["time_lower"];
   Rcpp::NumericVector sub_upper = sub_const["time_upper"];
+  Rcpp::IntegerVector sub_lineages = sub_const["lineages"];
   sub_likelihood *= double(sub_const["likelihood"]);
 
   Rcpp::List out =
     Rcpp::List::create(Rcpp::Named("time_lower") = sub_lower,
                        Rcpp::Named("time_upper") = sub_upper,
+                       Rcpp::Named("sub_lineages") = sub_lineages,
                        Rcpp::Named("sub_likelihood") = sub_likelihood);
 
   return out;
@@ -129,6 +131,7 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
   // Interval limits
   Rcpp::NumericVector const_lower(total_leaves - 1);
   Rcpp::NumericVector const_upper(total_leaves - 1);
+  Rcpp::IntegerVector const_lineages(total_leaves - 1);
 
   // Counters
   int k, m, c = 0;
@@ -143,6 +146,7 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
   // Sub-interval information
   Rcpp::List sub_intervals;
   Rcpp::NumericVector sub_lower, sub_upper;
+  Rcpp::IntegerVector sub_lineages;
 
   // Iterate through blocks
   for (k = 0; k < times.size(); ++k) {
@@ -151,6 +155,7 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
 
       const_lower(c) = block_lower(k);
       const_upper(c) = block_upper(k);
+      const_lineages(c) = lineages_upper(k);
       ++c;
 
     } else if(coalescences(k) > 1) {
@@ -161,12 +166,14 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
 
       sub_lower = sub_intervals["time_lower"];
       sub_upper = sub_intervals["time_upper"];
+      sub_lineages = sub_intervals["sub_lineages"];
       likelihood *= double(sub_intervals["sub_likelihood"]);
 
       for (m = 0; m < coalescences(k); ++m) {
 
         const_lower(c) = sub_lower(m);
         const_upper(c) = sub_upper(m);
+        const_lineages(c) = sub_lineages(m);
         ++c;
 
       }
@@ -178,6 +185,7 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
   Rcpp::List out =
     Rcpp::List::create(Rcpp::Named("time_lower") = const_lower,
                        Rcpp::Named("time_upper") = const_upper,
+                       Rcpp::Named("lineages") = const_lineages,
                        Rcpp::Named("likelihood") = likelihood);
 
   return out;

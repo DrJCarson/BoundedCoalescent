@@ -98,6 +98,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sample_bounded_times
+Rcpp::List sample_bounded_times(Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, int nsam);
+RcppExport SEXP _BoundedCoalescent_sample_bounded_times(SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP nsamSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type times(timesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type leaves(leavesSEXP);
+    Rcpp::traits::input_parameter< double >::type ne(neSEXP);
+    Rcpp::traits::input_parameter< double >::type bound(boundSEXP);
+    Rcpp::traits::input_parameter< int >::type nsam(nsamSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_bounded_times(times, leaves, ne, bound, nsam));
+    return rcpp_result_gen;
+END_RCPP
+}
 // homochronous_probability
 double homochronous_probability(int i, int j, double dt, double ne);
 RcppExport SEXP _BoundedCoalescent_homochronous_probability(SEXP iSEXP, SEXP jSEXP, SEXP dtSEXP, SEXP neSEXP) {
@@ -120,6 +135,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BoundedCoalescent_constrain_coalescences_c", (DL_FUNC) &_BoundedCoalescent_constrain_coalescences_c, 5},
     {"_BoundedCoalescent_sample_coalescence_time_c", (DL_FUNC) &_BoundedCoalescent_sample_coalescence_time_c, 4},
     {"_BoundedCoalescent_forward_algorithm_c", (DL_FUNC) &_BoundedCoalescent_forward_algorithm_c, 4},
+    {"_BoundedCoalescent_sample_bounded_times", (DL_FUNC) &_BoundedCoalescent_sample_bounded_times, 5},
     {"_BoundedCoalescent_homochronous_probability", (DL_FUNC) &_BoundedCoalescent_homochronous_probability, 4},
     {NULL, NULL, 0}
 };
