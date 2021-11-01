@@ -204,15 +204,14 @@ Rcpp::List sample_coalescence_time_c(double time_lower, double time_upper,
 
   // Normalising constant
   double z = (ne / (dl - 1.0)) *
-    (std::exp(((dl - 1.0) / ne) * (time_upper - time_lower)) - 1.0);
+    (1.0 - std::exp(((dl - 1.0) / ne) * (time_lower - time_upper)));
 
   // Time of coalescence
-  double coalescence_time = time_lower + (ne / (dl - 1.0)) *
-    std::log(std::exp(((dl - 1.0) / ne) * (time_upper - time_lower)) -
-    ((dl - 1.0) / ne) * z * u);
+  double coalescence_time = time_upper + (ne / (dl - 1.0)) *
+    std::log(1.0 - ((dl - 1.0) / ne) * z * u);
 
   double likelihood = (1.0 / z) *
-    std::exp(((dl - 1.0) / ne) * (coalescence_time - time_lower));
+    std::exp(((dl - 1.0) / ne) * (coalescence_time - time_upper));
 
   Rcpp::List out = Rcpp::List::create(Rcpp::Named("time") = coalescence_time,
                                       Rcpp::Named("likelihood") = likelihood);
