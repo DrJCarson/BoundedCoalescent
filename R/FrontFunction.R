@@ -7,7 +7,7 @@
 #' @param b Bound time.
 #' @param nsam Number of samples.
 #' @export
-bounded_times_sample <- function(t, l, ne, b, nsam = 1) {
+bounded_times_sample <- function(t, l, ne, b, nsam = 1, method = "direct") {
 
   if (length(l) != length(t)) {
 
@@ -50,7 +50,15 @@ bounded_times_sample <- function(t, l, ne, b, nsam = 1) {
   ordered_t <- t[leaf_order]
   ordered_l <- l[leaf_order]
 
-  full_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
+  if (method == "direct") {
+
+    full_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
+
+  } else if(method == "rejection") {
+
+    full_sample <- rejection_bounded_times(ordered_t, ordered_l, ne, b, nsam)
+
+  }
 
   return(full_sample)
 

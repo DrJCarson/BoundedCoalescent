@@ -4,7 +4,7 @@
 \alias{bounded_times_sample}
 \title{Sample Coalescence Times Under the Bounded Coalescent}
 \usage{
-bounded_times_sample(t, l, ne, b, nsam = 1)
+bounded_times_sample(t, l, ne, b, nsam = 1, method = "direct")
 }
 \arguments{
 \item{t}{Vector of leaf sampling times.}

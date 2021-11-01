@@ -112,3 +112,14 @@ bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne
     .Call(`_BoundedCoalescent_bounded_times_likelihood_c`, leaf_times, leaves, coalescence_times, ne, bound)
 }
 
+#' Rejection sampling coalescence times for the bounded coalescenct
+#'
+#' @param times Vector of ordered sampling times for leaves.
+#' @param leaves Number of leaves taken at each sampling time.
+#' @param ne Effective population size.
+#' @param bound Bound time.
+#' @param nsam Number of samples (deafault 1).
+rejection_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
+    .Call(`_BoundedCoalescent_rejection_bounded_times`, times, leaves, ne, bound, nsam)
+}
+
