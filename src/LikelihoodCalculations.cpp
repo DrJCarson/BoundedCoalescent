@@ -20,7 +20,17 @@ double bounded_times_likelihood_c(Rcpp::NumericVector leaf_times,
   --k;
 
   // Next event times
-  double next_leaf_time = leaf_times(k);
+  double next_leaf_time;
+  if (k >= 0) {
+
+    next_leaf_time = leaf_times(k);
+
+  } else{
+
+    next_leaf_time = bound;
+
+  }
+
   double next_coalescence_time = coalescence_times(c);
 
   // Time step
