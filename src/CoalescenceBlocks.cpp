@@ -73,14 +73,34 @@ Rcpp::List separate_coalescences_c(int coalescences,
   Rcpp::IntegerVector sub_leaves(coalescences);
   sub_leaves(coalescences - 1) = lineages_upper;
 
-  for(k = coalescences - 2; k >= 0; --k){
+  if ((time_upper - time_lower) < (4.0 * ne)) {
 
-    sub_times(k) = sub_times(k + 1) -
-      (time_upper - time_lower) / double(coalescences);
+    for(k = coalescences - 2; k >= 0; --k){
 
-    sub_leaves(k) = 0;
+      sub_times(k) = sub_times(k + 1) -
+        (time_upper - time_lower) / double(coalescences);
+
+      sub_leaves(k) = 0;
+
+    }
+
+  } else {
+
+    double lineages_expected = double(lineages_upper);
+
+    for(k = coalescences - 2; k >= 0; --k){
+
+      sub_times(k) = sub_times(k + 1) - ((2.0 * ne) /
+        (lineages_expected * (lineages_expected - 1.0)));
+
+      --lineages_expected;
+
+      sub_leaves(k) = 0;
+
+    }
 
   }
+
 
   // Set new bound and size
   double sub_bound = time_lower;
