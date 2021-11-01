@@ -19,7 +19,7 @@ test_that("Likelihood function gives expected result on small homochronous unbou
   l=c(1,1,1)
   c=c(1999,1998)
   ne=2
-  b=0
+  b=-Inf
   a=bounded_times_likelihood(t=t,l=l,c=c,ne=ne,b=b)
   b=dexp(1,3/2)*dexp(1,1/2)
   expect_equal(a,b)
