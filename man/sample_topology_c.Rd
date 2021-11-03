@@ -7,17 +7,11 @@
 sample_topology_c(leaf_times, leaves, coalescence_times)
 }
 \arguments{
+\item{leaf_times}{Vector of ordered sampling times for leaves.}
+
 \item{leaves}{Number of leaves taken at each sampling time.}
 
-\item{forward_probs}{2D array of probabilities from the forward algorithm.}
-
-\item{times}{Vector of ordered sampling times for leaves.}
-
-\item{ne}{Effective population size.}
-
-\item{bound}{Bound time.}
-
-\item{bound_size}{Number of lineages at the bound (default 1).}
+\item{coalescence_times}{Vector of ordered coalescence times.}
 }
 \description{
 Sample topology given coalescent times.

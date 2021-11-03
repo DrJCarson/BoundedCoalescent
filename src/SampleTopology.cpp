@@ -32,6 +32,9 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
   // Cumulative probability
   double sum_prob;
 
+  // Likelihood
+  double likelihood = 1.0;
+
   k = leaf_times.size() - 1;
 
   for (i = 0; i < leaves(k); ++i) {
@@ -69,6 +72,8 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
       node_ancestors(2 * c + 1, 0) = n_index + 1;
       node_ancestors(2 * c + 1, 1) = anc_1 + 1;
 
+      likelihood *= 2.0 / double(total_active_nodes);
+
       active_nodes(anc_1) = 0;
       --total_active_nodes;
 
@@ -86,8 +91,9 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
       node_ancestors(2 * c, 0) = n_index + 1;
       node_ancestors(2 * c, 1) = anc_2 + 1;
 
-      active_nodes(anc_2) = 0;
+      likelihood *= 1.0 / double(total_active_nodes);
 
+      active_nodes(anc_2) = 0;
 
       active_nodes(n_index) = 1;
       node_times(n_index) = coalescence_times(c);
@@ -115,7 +121,8 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
   }
 
   Rcpp::List out = Rcpp::List::create(Rcpp::Named("ancestors") = node_ancestors,
-                                      Rcpp::Named("times") = node_times);
+                                      Rcpp::Named("times") = node_times,
+                                      Rcpp::Named("likelihood") = likelihood);
 
   return out;
 
