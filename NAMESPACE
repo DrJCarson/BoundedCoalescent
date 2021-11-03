@@ -3,6 +3,7 @@
 export(backward_sampler_c)
 export(block_coalescences)
 export(block_coalescences_c)
+export(bounded_phylo_likelihood)
 export(bounded_phylo_sample)
 export(bounded_times_likelihood)
 export(bounded_times_sample)

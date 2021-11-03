@@ -22,7 +22,7 @@ RoxygenNote: 7.1.1
 LinkingTo: 
     Rcpp
 Imports: 
-    Rcpp,
-    ape
+    ape,
+    Rcpp
 Suggests:
     testthat

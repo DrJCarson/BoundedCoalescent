@@ -185,9 +185,13 @@ bounded_phylo_sample <- function(t, l, ne, b, tip_labels = NA,
                                        ordered_l,
                                        times_sample$times)
 
-  edge <- topology_sample$ancestors
-  edge_length <- topology_sample$times[topology_sample$ancestors[,2]] -
-    topology_sample$times[topology_sample$ancestors[,1]]
+  nodes <- data.frame(node = 1:(2 * sum(l) - 1),
+                      time = topology_sample$times,
+                      ancestor = topology_sample$ancestors)
+
+  edge <- topology_sample$edge
+  edge_length <- topology_sample$times[topology_sample$edge[,2]] -
+    topology_sample$times[topology_sample$edge[,1]]
 
   if (is.na(tip_labels)) {
 
@@ -212,11 +216,106 @@ bounded_phylo_sample <- function(t, l, ne, b, tip_labels = NA,
                        tip.label = tip_labels,
                        Nnode = as.integer(sum(l) - 1))
 
-  class(phylo_sample) <- "phylo"
+  class(phylo_sample) <- 'phylo'
 
   phylo_likelihood <- times_sample$likelihood * topology_sample$likelihood
 
-  return(list(phylo = phylo_sample,
-              likelihood = phylo_likelihood))
+  return(list(nodes = nodes,
+              likelihood = phylo_likelihood,
+              phylo = phylo_sample))
+
+}
+
+
+#' Calculate the likelihood of a phylogeny under the bounded coalescence
+#'
+#' @param phy Phylogeny of class 'phylo' or a data frame with time and ancestor
+#' columns.
+#' @param ne Effective population size.
+#' @param b Bound time.
+#' @param r Time of most recent common ancestor (needed for class 'phylo'
+#' inputs)
+#' @export
+bounded_phylo_likelihood <- function(phy, ne, b, r = NA) {
+
+  if (class(phy) == "phylo") {
+
+    if (is.na(r)) {
+
+      stop("Time of root node is needed for class 'phylo'.")
+
+    }
+
+    node_ancestors <- integer(2 * phy$Nnode + 1)
+    node_ancestors[phy$edge[,2]] <- phy$edge[,1]
+
+    node_times <- numeric(2 * phy$Nnode + 1)
+
+    root_nodes <- phy$edge[1, 1]
+    node_times[root_nodes] <- r
+
+    repeat {
+
+      target_indices <- which(phy$edge[, 1] %in% root_nodes)
+
+      if (length(target_indices) == 0) {
+        break
+      }
+
+      target_nodes <- phy$edge[target_indices, 2]
+      node_times[target_nodes] <- phy$edge.length[target_indices] +
+        node_times[node_ancestors[target_nodes]]
+
+      root_nodes <- target_nodes
+
+    }
+
+    nodes <- data.frame(time = node_times,
+                        ancestor = node_ancestors)
+
+  } else if (class(phy) == "data.frame") {
+
+    nodes <- phy
+
+  } else {
+
+    stop("phy is not an allowed class.")
+
+  }
+
+  total_nodes <- dim(nodes)[1]
+
+  leaf_indices <- which(!(1:total_nodes)%in%nodes$ancestor)
+  coalescence_indices <- (1:total_nodes)[-leaf_indices]
+
+  t <- unique(nodes$time[leaf_indices])
+
+  l <- integer(length(t))
+  for (i in 1:length(t)) {
+
+    l[i] <- length(which(nodes$time == t[i]))
+
+  }
+
+  c <- nodes$time[coalescence_indices]
+
+  times_likelihood <- bounded_times_likelihood(t, l, c, ne, b)
+
+  topology_likelihood <- 1.0
+
+  for (i in 1:length(coalescence_indices)) {
+
+    coalescence_time <- nodes$time[coalescence_indices][i]
+
+    lineages <-
+      length(which(nodes$time[leaf_indices] > coalescence_time)) -
+      length(which(nodes$time[coalescence_indices] > coalescence_time))
+
+    topology_likelihood <- topology_likelihood *
+      (2 / (lineages * (lineages - 1)))
+
+  }
+
+  return(times_likelihood * topology_likelihood)
 
 }
