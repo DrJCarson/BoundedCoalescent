@@ -157,6 +157,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sample_topology_c
+Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times, Rcpp::IntegerVector leaves, Rcpp::NumericVector coalescence_times);
+RcppExport SEXP _BoundedCoalescent_sample_topology_c(SEXP leaf_timesSEXP, SEXP leavesSEXP, SEXP coalescence_timesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type leaf_times(leaf_timesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type leaves(leavesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type coalescence_times(coalescence_timesSEXP);
+    rcpp_result_gen = Rcpp::wrap(sample_topology_c(leaf_times, leaves, coalescence_times));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BoundedCoalescent_backward_sampler_c", (DL_FUNC) &_BoundedCoalescent_backward_sampler_c, 6},
@@ -169,6 +182,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BoundedCoalescent_homochronous_probability", (DL_FUNC) &_BoundedCoalescent_homochronous_probability, 4},
     {"_BoundedCoalescent_bounded_times_likelihood_c", (DL_FUNC) &_BoundedCoalescent_bounded_times_likelihood_c, 5},
     {"_BoundedCoalescent_rejection_bounded_times", (DL_FUNC) &_BoundedCoalescent_rejection_bounded_times, 5},
+    {"_BoundedCoalescent_sample_topology_c", (DL_FUNC) &_BoundedCoalescent_sample_topology_c, 3},
     {NULL, NULL, 0}
 };
 
