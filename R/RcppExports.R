@@ -123,3 +123,12 @@ rejection_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
     .Call(`_BoundedCoalescent_rejection_bounded_times`, times, leaves, ne, bound, nsam)
 }
 
+#' Sample topology given coalescent times.
+#'
+#' @param leaf_times Vector of ordered sampling times for leaves.
+#' @param leaves Number of leaves taken at each sampling time.
+#' @param coalescence_times Vector of ordered coalescence times.
+sample_topology_c <- function(leaf_times, leaves, coalescence_times) {
+    .Call(`_BoundedCoalescent_sample_topology_c`, leaf_times, leaves, coalescence_times)
+}
+
