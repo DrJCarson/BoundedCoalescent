@@ -4,7 +4,7 @@
 \alias{bounded_sample_phylo}
 \title{Sample a phylogeny under the bounded coalescent}
 \usage{
-bounded_sample_phylo(t, l, ne, b, tip.label, method = "direct")
+bounded_sample_phylo(t, l, ne, b, tip.label, node.label, method = "direct")
 }
 \arguments{
 \item{t}{Vector of leaf sampling times.}
@@ -15,9 +15,11 @@ bounded_sample_phylo(t, l, ne, b, tip.label, method = "direct")
 
 \item{b}{Bound time.}
 
-\item{method}{Sampling method for the coalescence times.}
+\item{tip.label}{Labels for sampled leaves.}
 
-\item{tip_labels}{Labels for sampled leaves.}
+\item{node.label}{Labels for nodes.}
+
+\item{method}{Sampling method for the coalescence times.}
 }
 \description{
 Sample a phylogeny under the bounded coalescent

@@ -16,6 +16,8 @@ bounded_sample_times(t, l, ne, b, nsam = 1, method = "direct")
 \item{b}{Bound time.}
 
 \item{nsam}{Number of samples.}
+
+\item{method}{Sampling method for the coalescence times.}
 }
 \description{
 Sample Coalescence Times Under the Bounded Coalescent

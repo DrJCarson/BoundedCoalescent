@@ -6,6 +6,7 @@
 #' @param ne Effective population size.
 #' @param b Bound time.
 #' @param nsam Number of samples.
+#' @param method Sampling method for the coalescence times.
 #' @export
 bounded_sample_times <- function(t, l, ne, b, nsam = 1, method = "direct") {
 
@@ -146,7 +147,8 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 #' @param l vector of leaves sampled at each time.
 #' @param ne Effective population size.
 #' @param b Bound time.
-#' @param tip_labels Labels for sampled leaves.
+#' @param tip.label Labels for sampled leaves.
+#' @param node.label Labels for nodes.
 #' @param method Sampling method for the coalescence times.
 #' @export
 bounded_sample_phylo <- function(t, l, ne, b, tip.label, node.label,
