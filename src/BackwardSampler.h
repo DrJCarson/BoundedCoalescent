@@ -13,7 +13,6 @@
 //' @param ne Effective population size.
 //' @param bound Bound time.
 //' @param bound_size Number of lineages at the bound (default 1).
-//' @export
 // [[Rcpp::export]]
 Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
                               Rcpp::NumericVector times,

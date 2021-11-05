@@ -7,7 +7,7 @@
 bounded_likelihood_phylo(phy, ne, b, topology = T)
 }
 \arguments{
-\item{phy}{Phylogeny of class 'phylo'.}
+\item{phy}{Phylogeny of class 'phylo' of 'multiPhylo'.}
 
 \item{ne}{Effective population size.}
 
