@@ -11,7 +11,6 @@
 //' @param j Integer value for the final number of lineages.
 //' @param dt Time period over which coalescences can occur.
 //' @param ne Effective population size.
-//' @export
 // [[Rcpp::export]]
 double homochronous_probability(int i, int j, double dt, double ne);
 

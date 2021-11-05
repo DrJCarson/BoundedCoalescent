@@ -10,7 +10,6 @@
 //' @param leaves Number of leaves taken at each sampling time.
 //' @param ne Effective population size.
 //' @param bound Bound time.
-//' @export
 // [[Rcpp::export]]
 Rcpp::NumericVector forward_algorithm_c(Rcpp::NumericVector times,
                                         Rcpp::IntegerVector leaves,

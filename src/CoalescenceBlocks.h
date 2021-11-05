@@ -9,7 +9,6 @@
 //' @param times Vector of ordered sampling times for leaves.
 //' @param leaves Number of leaves taken at each sampling time.
 //' @param bound Bound time.
-//' @export
 // [[Rcpp::export]]
 Rcpp::DataFrame block_coalescences_c(Rcpp::IntegerVector sample,
                                      Rcpp::NumericVector times,
@@ -24,13 +23,12 @@ Rcpp::DataFrame block_coalescences_c(Rcpp::IntegerVector sample,
 //' @param time_upper Upper bound time of the block.
 //' @param lineages_upper Number of lineages at the start of the block.
 //' @param ne Effective population size.
-//' @export
 // [[Rcpp::export]]
 Rcpp::List separate_coalescences_c(int coalescences,
-                                        double time_lower,
-                                        double time_upper,
-                                        int lineages_upper,
-                                        double ne);
+                                   double time_lower,
+                                   double time_upper,
+                                   int lineages_upper,
+                                   double ne);
 
 
 //' Constrain coalescence events to unique time intervals
@@ -40,7 +38,6 @@ Rcpp::List separate_coalescences_c(int coalescences,
 //' @param leaves Number of leaves taken at each sampling time.
 //' @param ne Effective population size.
 //' @param bound Bound time.
-//' @export
 // [[Rcpp::export]]
 Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
                                          Rcpp::NumericVector times,
@@ -54,7 +51,6 @@ Rcpp::List constrain_coalescences_c(Rcpp::IntegerVector sample,
 //' @param time_upper Upper bound time of the interval.
 //' @param lineages Starting number of lineages.
 //' @param ne Effective population size.
-//' @export
 // [[Rcpp::export]]
 Rcpp::List sample_coalescence_time_c(double time_lower, double time_upper,
                                      int lineages, double ne);

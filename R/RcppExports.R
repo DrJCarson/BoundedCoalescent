@@ -12,7 +12,6 @@
 #' @param ne Effective population size.
 #' @param bound Bound time.
 #' @param bound_size Number of lineages at the bound (default 1).
-#' @export
 backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, bound_size = 1L) {
     .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, bound_size)
 }
@@ -23,7 +22,6 @@ backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, bound_si
 #' @param times Vector of ordered sampling times for leaves.
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param bound Bound time.
-#' @export
 block_coalescences_c <- function(sample, times, leaves, bound) {
     .Call(`_BoundedCoalescent_block_coalescences_c`, sample, times, leaves, bound)
 }
@@ -35,7 +33,6 @@ block_coalescences_c <- function(sample, times, leaves, bound) {
 #' @param time_upper Upper bound time of the block.
 #' @param lineages_upper Number of lineages at the start of the block.
 #' @param ne Effective population size.
-#' @export
 separate_coalescences_c <- function(coalescences, time_lower, time_upper, lineages_upper, ne) {
     .Call(`_BoundedCoalescent_separate_coalescences_c`, coalescences, time_lower, time_upper, lineages_upper, ne)
 }
@@ -47,7 +44,6 @@ separate_coalescences_c <- function(coalescences, time_lower, time_upper, lineag
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param ne Effective population size.
 #' @param bound Bound time.
-#' @export
 constrain_coalescences_c <- function(sample, times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound)
 }
@@ -58,7 +54,6 @@ constrain_coalescences_c <- function(sample, times, leaves, ne, bound) {
 #' @param time_upper Upper bound time of the interval.
 #' @param lineages Starting number of lineages.
 #' @param ne Effective population size.
-#' @export
 sample_coalescence_time_c <- function(time_lower, time_upper, lineages, ne) {
     .Call(`_BoundedCoalescent_sample_coalescence_time_c`, time_lower, time_upper, lineages, ne)
 }
@@ -71,7 +66,6 @@ sample_coalescence_time_c <- function(time_lower, time_upper, lineages, ne) {
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param ne Effective population size.
 #' @param bound Bound time.
-#' @export
 forward_algorithm_c <- function(times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_forward_algorithm_c`, times, leaves, ne, bound)
 }
@@ -96,7 +90,6 @@ sample_bounded_times_c <- function(times, leaves, ne, bound, nsam = 1L) {
 #' @param j Integer value for the final number of lineages.
 #' @param dt Time period over which coalescences can occur.
 #' @param ne Effective population size.
-#' @export
 homochronous_probability <- function(i, j, dt, ne) {
     .Call(`_BoundedCoalescent_homochronous_probability`, i, j, dt, ne)
 }

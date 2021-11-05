@@ -1,4 +1,95 @@
 
+#' Coalescent probabilities in the homochronous setting
+#'
+#' @param i Starting number of lineages.
+#' @param j Ending number of lineages.
+#' @param dt Time interval.
+#' @param ne Effective population size.
+#' @export
+coalescent_probability <- function(i, j, dt, ne) {
+
+  if (i <= 1) {
+
+    stop("Starting lineages must be at least 1.")
+
+  }
+
+  if (j > i) {
+
+    stop("Ending lineages must be lower than starting lineages.")
+
+  }
+
+  if (dt < 0) {
+
+    stop("Time interval must be positive.")
+
+  }
+
+  if (ne < 0) {
+
+    stop("Effective population size must be positive.")
+
+  }
+
+  return(homochronous_probability(as.integer(i),
+                                  as.integer(j),
+                                  as.numeric(dt),
+                                  as.numeric(ne)))
+
+}
+
+
+#' Forward algorithm for the bounded coalescent
+#'
+#' @param t Vector of leaf sampling times.
+#' @param l vector of leaves sampled at each time.
+#' @param ne Effective population size.
+#' @param b Bound time.
+#' @export
+bounded_forward_algorithm <- function(t, l, ne, b) {
+
+  if (length(l) != length(t)) {
+
+    stop("t and l are of different lengths.")
+
+  }
+
+  if (!(length(t) > 0)) {
+
+    stop("Need at least one sampling time.")
+
+  }
+
+  if (sum(l) <= 1) {
+
+    stop("Need at least two leaves to coalesce.")
+
+  }
+
+  if (b > min(t)) {
+
+    stop("Bound time is greater than earliest sampling time.")
+
+  }
+
+  if (ne <= 0) {
+
+    stop("Effective population size must be positive.")
+
+  }
+
+  forward_probs <- forward_algorithm_c(as.numeric(t),
+                                       as.integer(l),
+                                       as.numeric(ne),
+                                       as.numeric(b))
+
+  return(list(probabilities = forward_probs,
+              bound_probability = forward_probs[1, 1]))
+
+}
+
+
 #' Sample Coalescence Times Under the Bounded Coalescent
 #'
 #' @param t Vector of leaf sampling times.
@@ -53,11 +144,19 @@ bounded_sample_times <- function(t, l, ne, b, nsam = 1, method = "direct") {
 
   if (method == "direct") {
 
-    full_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
+    full_sample <- sample_bounded_times_c(as.numeric(ordered_t),
+                                          as.integer(ordered_l),
+                                          as.numeric(ne),
+                                          as.numeric(b),
+                                          as.integer(nsam))
 
   } else if(method == "rejection") {
 
-    full_sample <- rejection_bounded_times(ordered_t, ordered_l, ne, b, nsam)
+    full_sample <- rejection_bounded_times(as.numeric(ordered_t),
+                                           as.integer(ordered_l),
+                                           as.numeric(ne),
+                                           as.numeric(b),
+                                           as.integer(nsam))
 
   }
 
@@ -108,7 +207,6 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 
   }
 
-
   if (length(c) != (sum(l) - 1)) {
 
     stop("Number of coalescence times inconsistent with number of leaves.")
@@ -121,8 +219,11 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
   ordered_l <- l[leaf_order]
   sorted_c <- sort(c)
 
-  likelihood <-
-    bounded_times_likelihood_c(ordered_t, ordered_l, sorted_c, ne, b)
+  likelihood <- bounded_times_likelihood_c(as.numeric(ordered_t),
+                                           as.integer(ordered_l),
+                                           as.numeric(sorted_c),
+                                           as.numeric(ne),
+                                           as.numeric(b))
 
   if (topology) {
 
@@ -198,18 +299,25 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
   if (method == "direct") {
 
-    times_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
+    times_sample <- sample_bounded_times_c(as.numeric(ordered_t),
+                                           as.integer(ordered_l),
+                                           as.numeric(ne),
+                                           as.numeric(b),
+                                           as.integer(nsam))
 
   } else if(method == "rejection") {
 
-    times_sample <- rejection_bounded_times(ordered_t, ordered_l, ne, b, nsam)
+    times_sample <- rejection_bounded_times(as.numeric(ordered_t),
+                                            as.integer(ordered_l),
+                                            as.numeric(ne),
+                                            as.numeric(b),
+                                            as.integer(nsam))
 
   }
 
   mphylo <- vector("list", nsam)
   mlikelihood <- numeric(nsam)
   mnodes <- vector("list", nsam)
-
 
   if (missing(tip.label)) {
 
@@ -225,9 +333,9 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
   for (i in 1:nsam) {
 
-    topology_sample <- sample_topology_c(ordered_t,
-                                         ordered_l,
-                                         times_sample$times[i,])
+    topology_sample <- sample_topology_c(as.numeric(ordered_t),
+                                         as.integer(ordered_l),
+                                         as.numeric(times_sample$times[i,]))
 
     nodes <- data.frame(node = 1:(2 * sum(l) - 1),
                              time = topology_sample$times,
@@ -287,16 +395,14 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
                 nodes = mnodes
     ))
 
-
   }
-
 
 }
 
 
 #' Calculate the likelihood of a phylogeny under the bounded coalescence
 #'
-#' @param phy Phylogeny of class 'phylo'.
+#' @param phy Phylogeny of class 'phylo' of 'multiPhylo'.
 #' @param ne Effective population size.
 #' @param b Bound time.
 #' inputs)
