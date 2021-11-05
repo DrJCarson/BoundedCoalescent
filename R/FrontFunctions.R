@@ -147,11 +147,12 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 #' @param l vector of leaves sampled at each time.
 #' @param ne Effective population size.
 #' @param b Bound time.
+#' @param nsam Number of samples.
 #' @param tip.label Labels for sampled leaves.
 #' @param node.label Labels for nodes.
 #' @param method Sampling method for the coalescence times.
 #' @export
-bounded_sample_phylo <- function(t, l, ne, b, tip.label, node.label,
+bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
                                  method = "direct") {
 
   if (length(l) != length(t)) {
@@ -184,6 +185,12 @@ bounded_sample_phylo <- function(t, l, ne, b, tip.label, node.label,
 
   }
 
+  if (nsam <= 0) {
+
+    stop("Sample size must be positive.")
+
+  }
+
   leaf_order <- order(t)
 
   ordered_t <- t[leaf_order]
@@ -191,25 +198,18 @@ bounded_sample_phylo <- function(t, l, ne, b, tip.label, node.label,
 
   if (method == "direct") {
 
-    times_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b)
+    times_sample <- sample_bounded_times_c(ordered_t, ordered_l, ne, b, nsam)
 
   } else if(method == "rejection") {
 
-    times_sample <- rejection_bounded_times(ordered_t, ordered_l, ne, b)
+    times_sample <- rejection_bounded_times(ordered_t, ordered_l, ne, b, nsam)
 
   }
 
-  topology_sample <- sample_topology_c(ordered_t,
-                                       ordered_l,
-                                       times_sample$times)
+  mphylo <- vector("list", nsam)
+  mlikelihood <- numeric(nsam)
+  mnodes <- vector("list", nsam)
 
-  nodes <- data.frame(node = 1:(2 * sum(l) - 1),
-                      time = topology_sample$times,
-                      ancestor = topology_sample$ancestors)
-
-  edge <- topology_sample$edge
-  edge_length <- topology_sample$times[topology_sample$edge[,2]] -
-    topology_sample$times[topology_sample$edge[,1]]
 
   if (missing(tip.label)) {
 
@@ -223,25 +223,75 @@ bounded_sample_phylo <- function(t, l, ne, b, tip.label, node.label,
 
   }
 
-  phylo_sample <- list(edge = edge,
-                       edge.length = edge_length,
-                       tip.label = tip.label,
-                       node.label = node.label,
-                       Nnode = as.integer(sum(l) - 1),
-                       root.time = min(times_sample$times))
+  for (i in 1:nsam) {
 
-  class(phylo_sample) <- 'phylo'
+    topology_sample <- sample_topology_c(ordered_t,
+                                         ordered_l,
+                                         times_sample$times[i,])
 
-  phylo_likelihood <- times_sample$likelihood * topology_sample$likelihood
+    nodes <- data.frame(node = 1:(2 * sum(l) - 1),
+                             time = topology_sample$times,
+                             ancestor = topology_sample$ancestors)
 
-  return(list(phylo = phylo_sample,
-              likelihood = phylo_likelihood,
-              coalescence_times = c(times_sample$times),
-              nodes = nodes
-              ))
+    mnodes[[i]] <- nodes
+
+    edge <- topology_sample$edge
+    edge_length <- topology_sample$times[topology_sample$edge[,2]] -
+      topology_sample$times[topology_sample$edge[,1]]
+
+    root_time <- min(times_sample$times[i,])
+
+    if (is.finite(b)) {
+
+      root_edge <- root_time - b
+
+    } else {
+
+      root_edge <- NULL
+
+    }
+
+    phylo_sample <- list(edge = edge,
+                         edge.length = edge_length,
+                         tip.label = tip.label,
+                         node.label = node.label,
+                         Nnode = as.integer(sum(l) - 1),
+                         root.time = root_time,
+                         root.edge = root_edge)
+
+    class(phylo_sample) <- 'phylo'
+
+    mphylo[[i]] <- phylo_sample
+
+    phylo_likelihood <- times_sample$likelihood[i] * topology_sample$likelihood
+
+    mlikelihood[i] <- phylo_likelihood
+
+  }
+
+  if (nsam == 1) {
+
+    return(list(phylo = phylo_sample,
+                likelihood = phylo_likelihood,
+                coalescence_times = c(times_sample$times),
+                nodes = nodes
+    ))
+
+  } else {
+
+    class(mphylo) <- "multiPhylo"
+
+    return(list(phylo = mphylo,
+                likelihood = mlikelihood,
+                coalescence_times = times_sample$times,
+                nodes = mnodes
+    ))
+
+
+  }
+
 
 }
-
 
 
 #' Calculate the likelihood of a phylogeny under the bounded coalescence
@@ -263,47 +313,55 @@ bounded_likelihood_phylo <- function(phy, ne, b, topology = T) {
 
     }
 
-    node_ancestors <- integer(2 * phy$Nnode + 1)
-    node_ancestors[phy$edge[,2]] <- phy$edge[,1]
+    node_times <- phy$root.time+ape::dist.nodes(phy)[ape::Ntip(phy)+1,]
 
-    node_times <- numeric(2 * phy$Nnode + 1)
+    total_nodes <- length(node_times)
 
-    root_nodes <- phy$edge[1, 1]
-    node_times[root_nodes] <- phy$root.time
+    leaf_indices <- 1:ape::Ntip(phy)
+    coalescence_indices <- (ape::Ntip(phy)+1):total_nodes
 
-    repeat {
+    t <- node_times[leaf_indices]
+    l <- as.integer(rep(1, length(t)))
+    c <- node_times[coalescence_indices]
 
-      target_indices <- which(phy$edge[, 1] %in% root_nodes)
+    likelihood <- bounded_likelihood(t, l, c, ne, b, topology)
 
-      if (length(target_indices) == 0) {
-        break
+    return(likelihood)
+
+  } else if (class(phy) == "multiPhylo") {
+
+    likelihood <- numeric(length(phy))
+
+    for (i in 1:length(phy)) {
+
+      if (is.null(phy[[i]]$root.time)) {
+
+        stop("root.time is required.")
+
       }
 
-      target_nodes <- phy$edge[target_indices, 2]
-      node_times[target_nodes] <- phy$edge.length[target_indices] +
-        node_times[node_ancestors[target_nodes]]
+      node_times <- phy[[i]]$root.time+
+        ape::dist.nodes(phy[[i]])[ape::Ntip(phy[[i]])+1,]
 
-      root_nodes <- target_nodes
+      total_nodes <- length(node_times)
+
+      leaf_indices <- 1:ape::Ntip(phy[[i]])
+      coalescence_indices <- (ape::Ntip(phy[[i]])+1):total_nodes
+
+      t <- node_times[leaf_indices]
+      l <- as.integer(rep(1, length(t)))
+      c <- node_times[coalescence_indices]
+
+      likelihood[i] <- bounded_likelihood(t, l, c, ne, b, topology)
 
     }
+
+    return(likelihood)
 
   } else {
 
     stop("phy is not an allowed class.")
 
   }
-
-  total_nodes <- length(node_times)
-
-  leaf_indices <- which(!(1:total_nodes)%in%node_ancestors)
-  coalescence_indices <- (1:total_nodes)[-leaf_indices]
-
-  t <- node_times[leaf_indices]
-  l <- as.integer(rep(1, length(t)))
-  c <- node_times[coalescence_indices]
-
-  likelihood <- bounded_likelihood(t, l, c, ne, b, topology)
-
-  return(likelihood)
 
 }

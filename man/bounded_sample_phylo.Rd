@@ -4,7 +4,16 @@
 \alias{bounded_sample_phylo}
 \title{Sample a phylogeny under the bounded coalescent}
 \usage{
-bounded_sample_phylo(t, l, ne, b, tip.label, node.label, method = "direct")
+bounded_sample_phylo(
+  t,
+  l,
+  ne,
+  b,
+  nsam = 1,
+  tip.label,
+  node.label,
+  method = "direct"
+)
 }
 \arguments{
 \item{t}{Vector of leaf sampling times.}
@@ -14,6 +23,8 @@ bounded_sample_phylo(t, l, ne, b, tip.label, node.label, method = "direct")
 \item{ne}{Effective population size.}
 
 \item{b}{Bound time.}
+
+\item{nsam}{Number of samples.}
 
 \item{tip.label}{Labels for sampled leaves.}
 
