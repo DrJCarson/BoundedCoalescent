@@ -24,6 +24,8 @@ bounded_sample_phylo(
 
 \item{b}{Bound time.}
 
+\item{nsam}{Number of samples.}
+
 \item{tip.label}{Labels for sampled leaves.}
 
 \item{node.label}{Labels for nodes.}

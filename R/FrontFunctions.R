@@ -147,6 +147,7 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 #' @param l vector of leaves sampled at each time.
 #' @param ne Effective population size.
 #' @param b Bound time.
+#' @param nsam Number of samples.
 #' @param tip.label Labels for sampled leaves.
 #' @param node.label Labels for nodes.
 #' @param method Sampling method for the coalescence times.
@@ -293,7 +294,6 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 }
 
 
-
 #' Calculate the likelihood of a phylogeny under the bounded coalescence
 #'
 #' @param phy Phylogeny of class 'phylo'.
@@ -313,47 +313,55 @@ bounded_likelihood_phylo <- function(phy, ne, b, topology = T) {
 
     }
 
-    node_ancestors <- integer(2 * phy$Nnode + 1)
-    node_ancestors[phy$edge[,2]] <- phy$edge[,1]
+    node_times <- phy$root.time+ape::dist.nodes(phy)[ape::Ntip(phy)+1,]
 
-    node_times <- numeric(2 * phy$Nnode + 1)
+    total_nodes <- length(node_times)
 
-    root_nodes <- phy$edge[1, 1]
-    node_times[root_nodes] <- phy$root.time
+    leaf_indices <- 1:ape::Ntip(phy)
+    coalescence_indices <- (ape::Ntip(phy)+1):total_nodes
 
-    repeat {
+    t <- node_times[leaf_indices]
+    l <- as.integer(rep(1, length(t)))
+    c <- node_times[coalescence_indices]
 
-      target_indices <- which(phy$edge[, 1] %in% root_nodes)
+    likelihood <- bounded_likelihood(t, l, c, ne, b, topology)
 
-      if (length(target_indices) == 0) {
-        break
+    return(likelihood)
+
+  } else if (class(phy) == "multiPhylo") {
+
+    likelihood <- numeric(length(phy))
+
+    for (i in 1:length(phy)) {
+
+      if (is.null(phy[[i]]$root.time)) {
+
+        stop("root.time is required.")
+
       }
 
-      target_nodes <- phy$edge[target_indices, 2]
-      node_times[target_nodes] <- phy$edge.length[target_indices] +
-        node_times[node_ancestors[target_nodes]]
+      node_times <- phy[[i]]$root.time+
+        ape::dist.nodes(phy[[i]])[ape::Ntip(phy[[i]])+1,]
 
-      root_nodes <- target_nodes
+      total_nodes <- length(node_times)
+
+      leaf_indices <- 1:ape::Ntip(phy[[i]])
+      coalescence_indices <- (ape::Ntip(phy[[i]])+1):total_nodes
+
+      t <- node_times[leaf_indices]
+      l <- as.integer(rep(1, length(t)))
+      c <- node_times[coalescence_indices]
+
+      likelihood[i] <- bounded_likelihood(t, l, c, ne, b, topology)
 
     }
+
+    return(likelihood)
 
   } else {
 
     stop("phy is not an allowed class.")
 
   }
-
-  total_nodes <- length(node_times)
-
-  leaf_indices <- which(!(1:total_nodes)%in%node_ancestors)
-  coalescence_indices <- (1:total_nodes)[-leaf_indices]
-
-  t <- node_times[leaf_indices]
-  l <- as.integer(rep(1, length(t)))
-  c <- node_times[coalescence_indices]
-
-  likelihood <- bounded_likelihood(t, l, c, ne, b, topology)
-
-  return(likelihood)
 
 }
