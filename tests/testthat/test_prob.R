@@ -46,3 +46,17 @@ test_that("Likelihood function works on a rtree.",{
   expect_silent(lik<-bounded_likelihood_phylo(phy=t,ne=0.9,b=1999,topology = T))
   expect_is(lik,'numeric')
 })
+
+test_that("Simulation can be done using either direct method or rejection sampling.", {
+  set.seed(3)
+  t=c(2000.4, 2000.8, 2001.2, 2001.6, 2002)
+  l=rep(3, 5)
+  ne=1.1
+  b=2000
+  expect_silent(sim<-bounded_sample_phylo(t=t,l=l , ne = ne, b = b,method='direct'))
+  expect_is(sim,'list')
+  expect_gt(bounded_likelihood_phylo(phy=sim$phylo,ne=0.9,b=1999,topology = T),0)
+  expect_silent(sim<-bounded_sample_phylo(t=t,l=l , ne = ne, b = b,method='rejection'))
+  expect_is(sim,'list')
+  expect_gt(bounded_likelihood_phylo(phy=sim$phylo,ne=0.9,b=1999,topology = T),0)
+})
