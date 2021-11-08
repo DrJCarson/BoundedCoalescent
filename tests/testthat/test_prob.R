@@ -60,3 +60,39 @@ test_that("Simulation can be done using either direct method or rejection sampli
   expect_is(sim,'list')
   expect_gt(bounded_likelihood_phylo(phy=sim$phylo,ne=0.9,b=1999,topology = T),0)
 })
+
+test_that("Likelihood function works for a multiPhylo.",{
+  library(ape)
+  set.seed(2)
+  t=c(rtree(10),rtree(20))
+  t[[1]]$root.time=t[[2]]$root.time=2000
+  expect_silent(lik<-bounded_likelihood_phylo(phy=t,ne=0.9,b=1999,topology = T))
+  expect_is(lik,'numeric')
+  expect_equal(length(lik),2)
+})
+
+test_that("Lineage number remains constant if dt=0.",{
+  expect_equal(coalescent_probability(10,10,0,2),1)
+})
+
+
+test_that("Forward probabilities add up to 1.",{
+  expect_silent(b<-bounded_forward_algorithm(2010:2019,rep(1,10),1.2,2000))
+  expect_equal(max(abs(colSums(b$probabilities)-1)),0)
+})
+
+
+test_that("Can simulate with rejection.",{
+  set.seed(0)
+  t=2000:2020
+  l=rep(2, length(t))
+  ne=1.3
+  b=1999
+  expect_silent(sim<-bounded_sample_times(t=t,l=l , ne = ne, b = b,nsam=5,method='rejection'))
+  expect_is(sim,'list')
+  expect_equal(nrow(sim$times),5)
+  expect_silent(sim<-bounded_sample_phylo(t=t,l=l , ne = ne, b = b,nsam=5,method='rejection'))
+  expect_is(sim,'list')
+  expect_is(sim$phylo,'multiPhylo')
+  expect_equal(length(sim$phylo),5)
+})
