@@ -79,10 +79,14 @@ bounded_forward_algorithm <- function(t, l, ne, b) {
 
   }
 
-  forward_probs <- forward_algorithm_c(as.numeric(t),
-                                       as.integer(l),
-                                       as.numeric(ne),
-                                       as.numeric(b))
+  forward_probs <- array(numeric(sum(l) * (length(t) + 1)),
+                         dim = c(sum(l), (length(t) + 1)))
+
+  colnames(forward_probs) <- c("t*", paste("t", 1:length(times), sep=""))
+  rownames(forward_probs) <- c(paste("P(", 1:sum(leaves), ")", sep=""))
+
+  forward_algorithm_c(as.numeric(t), as.integer(l), as.numeric(ne),
+                      as.numeric(b), forward_probs)
 
   return(list(probabilities = forward_probs,
               bound_probability = forward_probs[1, 1]))

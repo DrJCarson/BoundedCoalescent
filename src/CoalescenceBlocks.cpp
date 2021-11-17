@@ -1,7 +1,5 @@
 #include <Rcpp.h>
-#include "HomochronousProbabilities.h"
-#include "ForwardAlgorithm.h"
-#include "BackwardSampler.h"
+#include "FFBS.h"
 #include "CoalescenceBlocks.h"
 
 // Determine number of coalescences in each sampling interval
@@ -107,8 +105,11 @@ Rcpp::List separate_coalescences_c(int coalescences,
   int sub_bound_size = lineages_upper - coalescences;
 
   // Forward algorithm for the new partition
-  Rcpp::NumericVector sub_probs =
-    forward_algorithm_c(sub_times, sub_leaves, ne, sub_bound);
+  Rcpp::NumericVector sub_probs(lineages_upper * (sub_times.size() + 1));
+  sub_probs.attr("dim") =
+    Rcpp::Dimension(lineages_upper, (sub_times.size() + 1));
+
+  forward_algorithm_c(sub_times, sub_leaves, ne, sub_bound, sub_probs);
 
   Rcpp::List sub_bs = backward_sampler_c(sub_probs, sub_times, sub_leaves, ne,
                                          sub_bound, sub_bound_size);

@@ -1,7 +1,5 @@
 #include <Rcpp.h>
-#include "HomochronousProbabilities.h"
-#include "ForwardAlgorithm.h"
-#include "BackwardSampler.h"
+#include "FFBS.h"
 #include "CoalescenceBlocks.h"
 #include "RejectionSampling.h"
 
@@ -32,8 +30,10 @@ Rcpp::List rejection_bounded_times(Rcpp::NumericVector times,
   Rcpp::NumericVector likelihood(nsam, 1.0);
 
   // Forward filter for normalising constant
-  Rcpp::NumericVector forward_probs =
-    forward_algorithm_c(times, leaves, ne, bound);
+  Rcpp::NumericVector forward_probs(total_leaves * (times.size() + 1));
+  forward_probs.attr("dim") = Rcpp::Dimension(total_leaves, (times.size() + 1));
+
+  forward_algorithm_c(times, leaves, ne, bound, forward_probs);
 
   while (n < nsam) {
 

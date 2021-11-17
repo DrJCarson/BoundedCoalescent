@@ -1,7 +1,5 @@
 #include <Rcpp.h>
-#include "HomochronousProbabilities.h"
-#include "ForwardAlgorithm.h"
-#include "BackwardSampler.h"
+#include "FFBS.h"
 #include "CoalescenceBlocks.h"
 #include "FullSampling.h"
 
@@ -21,8 +19,10 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   // Storage for likelihood
   Rcpp::NumericVector likelihood(nsam, 1.0);
 
-  Rcpp::NumericVector forward_probs =
-    forward_algorithm_c(times, leaves, ne, bound);
+  Rcpp::NumericVector forward_probs(total_leaves * (times.size() + 1));
+  forward_probs.attr("dim") = Rcpp::Dimension(total_leaves, (times.size() + 1));
+
+  forward_algorithm_c(times, leaves, ne, bound, forward_probs);
 
   // Counter
   int c, n;
