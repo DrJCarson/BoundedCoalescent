@@ -44,11 +44,12 @@ void forward_algorithm_c(Rcpp::NumericVector times,
 //' @param bound Bound time.
 //' @param bound_size Number of lineages at the bound (default 1).
 // [[Rcpp::export]]
-Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
-                              Rcpp::NumericVector times,
-                              Rcpp::IntegerVector leaves,
-                              double ne,
-                              double bound,
-                              int bound_size = 1);
+double backward_sampler_c(Rcpp::NumericVector forward_probs,
+                          Rcpp::NumericVector times,
+                          Rcpp::IntegerVector leaves,
+                          double ne,
+                          double bound,
+                          Rcpp::IntegerVector lineages,
+                          int bound_size = 1);
 
 #endif

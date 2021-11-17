@@ -111,11 +111,9 @@ Rcpp::List separate_coalescences_c(int coalescences,
 
   forward_algorithm_c(sub_times, sub_leaves, ne, sub_bound, sub_probs);
 
-  Rcpp::List sub_bs = backward_sampler_c(sub_probs, sub_times, sub_leaves, ne,
-                                         sub_bound, sub_bound_size);
-
-  Rcpp::IntegerVector sub_sample = sub_bs["sample"];
-  sub_likelihood *= double(sub_bs["likelihood"]);
+  Rcpp::IntegerVector sub_sample(sub_times.size() + 1);
+  sub_likelihood *= backward_sampler_c(sub_probs, sub_times, sub_leaves, ne,
+                                       sub_bound, sub_sample, sub_bound_size);
 
   Rcpp::List sub_const = constrain_coalescences_c(sub_sample, sub_times,
                                                  sub_leaves, ne, sub_bound);

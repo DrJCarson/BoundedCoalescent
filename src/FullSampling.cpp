@@ -28,7 +28,7 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   int c, n;
 
   Rcpp::List back_sampler;
-  Rcpp::IntegerVector lineages;
+  Rcpp::IntegerVector lineages(times.size() + 1);
 
   Rcpp::List constraints;
   Rcpp::NumericVector const_lower, const_upper;
@@ -38,9 +38,8 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
 
   for (n = 0; n < nsam; ++n) {
 
-    back_sampler = backward_sampler_c(forward_probs, times, leaves, ne, bound);
-    lineages = back_sampler["sample"];
-    likelihood(n) *= double(back_sampler["likelihood"]);
+    likelihood(n) *=
+      backward_sampler_c(forward_probs, times, leaves, ne, bound, lineages);
 
     constraints = constrain_coalescences_c(lineages, times, leaves, ne, bound);
     const_lower = constraints["time_lower"];

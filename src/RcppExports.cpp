@@ -97,8 +97,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // backward_sampler_c
-Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, int bound_size);
-RcppExport SEXP _BoundedCoalescent_backward_sampler_c(SEXP forward_probsSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP bound_sizeSEXP) {
+double backward_sampler_c(Rcpp::NumericVector forward_probs, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, Rcpp::IntegerVector lineages, int bound_size);
+RcppExport SEXP _BoundedCoalescent_backward_sampler_c(SEXP forward_probsSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP lineagesSEXP, SEXP bound_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -107,8 +107,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type leaves(leavesSEXP);
     Rcpp::traits::input_parameter< double >::type ne(neSEXP);
     Rcpp::traits::input_parameter< double >::type bound(boundSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type lineages(lineagesSEXP);
     Rcpp::traits::input_parameter< int >::type bound_size(bound_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(backward_sampler_c(forward_probs, times, leaves, ne, bound, bound_size));
+    rcpp_result_gen = Rcpp::wrap(backward_sampler_c(forward_probs, times, leaves, ne, bound, lineages, bound_size));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -178,7 +179,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BoundedCoalescent_sample_coalescence_time_c", (DL_FUNC) &_BoundedCoalescent_sample_coalescence_time_c, 4},
     {"_BoundedCoalescent_homochronous_probability", (DL_FUNC) &_BoundedCoalescent_homochronous_probability, 4},
     {"_BoundedCoalescent_forward_algorithm_c", (DL_FUNC) &_BoundedCoalescent_forward_algorithm_c, 5},
-    {"_BoundedCoalescent_backward_sampler_c", (DL_FUNC) &_BoundedCoalescent_backward_sampler_c, 6},
+    {"_BoundedCoalescent_backward_sampler_c", (DL_FUNC) &_BoundedCoalescent_backward_sampler_c, 7},
     {"_BoundedCoalescent_sample_bounded_times_c", (DL_FUNC) &_BoundedCoalescent_sample_bounded_times_c, 5},
     {"_BoundedCoalescent_bounded_times_likelihood_c", (DL_FUNC) &_BoundedCoalescent_bounded_times_likelihood_c, 5},
     {"_BoundedCoalescent_rejection_bounded_times", (DL_FUNC) &_BoundedCoalescent_rejection_bounded_times, 5},

@@ -80,8 +80,8 @@ forward_algorithm_c <- function(times, leaves, ne, bound, forward_probs) {
 #' @param ne Effective population size.
 #' @param bound Bound time.
 #' @param bound_size Number of lineages at the bound (default 1).
-backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, bound_size = 1L) {
-    .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, bound_size)
+backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, lineages, bound_size = 1L) {
+    .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, lineages, bound_size)
 }
 
 #' Sample coalescence times for the bounded coalescenct

@@ -153,16 +153,15 @@ void forward_algorithm_c(Rcpp::NumericVector times,
 
 
 // Backward sampler for the bounded coalescent
-Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
-                              Rcpp::NumericVector times,
-                              Rcpp::IntegerVector leaves,
-                              double ne,
-                              double bound,
-                              int bound_size) {
+double backward_sampler_c(Rcpp::NumericVector forward_probs,
+                          Rcpp::NumericVector times,
+                          Rcpp::IntegerVector leaves,
+                          double ne,
+                          double bound,
+                          Rcpp::IntegerVector lineages,
+                          int bound_size) {
 
-  // Sampled lineages including bound
-  Rcpp::IntegerVector lineages(times.size() + 1);
-  lineages.names() = Rcpp::colnames(forward_probs);
+  // Initialise with bound condition
   lineages(0) = bound_size;
 
   // Likelihood of sample
@@ -172,7 +171,7 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
   int total_leaves = Rcpp::sum(leaves);
 
   // Smoothed (sampling) probabilities
-  Rcpp::NumericVector smoothed_probs(total_leaves);
+  double smoothed_prob;
 
   // Counters
   int k, i, j;
@@ -198,15 +197,15 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
 
     transition_prob = homochronous_probability(i, lineages(0), dt, ne);
 
-    smoothed_probs(i - 1) = (transition_prob * forward_probs(i - 1, 1)) /
+    smoothed_prob = (transition_prob * forward_probs(i - 1, 1)) /
       forward_probs(lineages(0) - 1, 0);
 
-    sum_prob += smoothed_probs(i - 1);
+    sum_prob += smoothed_prob;
 
     if (u < sum_prob) {
 
       lineages(1) = i;
-      likelihood *= smoothed_probs(i - 1);
+      likelihood *= smoothed_prob;
       break;
 
     }
@@ -232,15 +231,15 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
 
       transition_prob = homochronous_probability(i, j, dt, ne);
 
-      smoothed_probs(i - 1) = (transition_prob * forward_probs(i - 1, k + 1)) /
+      smoothed_prob = (transition_prob * forward_probs(i - 1, k + 1)) /
         forward_probs(lineages(k) - 1, k);
 
-      sum_prob += smoothed_probs(i - 1);
+      sum_prob += smoothed_prob;
 
       if (u < sum_prob) {
 
         lineages(k + 1) = i;
-        likelihood *= smoothed_probs(i - 1);
+        likelihood *= smoothed_prob;
         break;
 
       }
@@ -249,12 +248,7 @@ Rcpp::List backward_sampler_c(Rcpp::NumericVector forward_probs,
 
   }
 
-  // Return sample and likelihood
-  Rcpp::List out(2);
-  out(0) = lineages;
-  out(1) = likelihood;
-  out.names() = Rcpp::CharacterVector::create("sample", "likelihood");
-
-  return out;
+  // Return likelihood
+  return likelihood;
 
 }
