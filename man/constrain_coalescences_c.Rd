@@ -4,7 +4,17 @@
 \alias{constrain_coalescences_c}
 \title{Constrain coalescence events to unique time intervals}
 \usage{
-constrain_coalescences_c(sample, times, leaves, ne, bound)
+constrain_coalescences_c(
+  sample,
+  times,
+  leaves,
+  ne,
+  bound,
+  const_lower,
+  const_upper,
+  const_lineages,
+  const_events
+)
 }
 \arguments{
 \item{sample}{Sample of number of lineages from backward sampler}

@@ -27,6 +27,16 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   // Counter
   int c, n;
 
+  // Double copy of starting lineages
+  double dl;
+
+  // Normalising constant
+  double z;
+
+  // Random numbers for sampling
+  Rcpp::NumericVector u = Rcpp::runif(nsam * (total_leaves - 1), 0.0, 1.0);
+  u.attr("dim") = Rcpp::Dimension(nsam, (total_leaves - 1));
+
   Rcpp::List back_sampler;
   Rcpp::IntegerVector lineages(times.size() + 1);
 
@@ -36,7 +46,7 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   Rcpp::IntegerVector const_lineages(total_leaves - 1);
   Rcpp::IntegerVector const_events(total_leaves - 1);
 
-  Rcpp::List single_sample;
+  Rcpp::NumericVector single_sample(2);
 
   for (n = 0; n < nsam; ++n) {
 
@@ -44,25 +54,21 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
       backward_sampler_c(forward_probs, times, leaves, ne, bound, lineages);
 
     likelihood(n) *=
-      constrain_coalescences_new_c(lineages, times, leaves, ne, bound,
-                                   const_lower, const_upper, const_lineages,
-                                   const_events);
-
-//    constraints = constrain_coalescences_c(lineages, times, leaves, ne, bound);
-//    const_lower = constraints["time_lower"];
-//    const_upper = constraints["time_upper"];
-//    const_lineages = constraints["lineages"];
-//    likelihood(n) *= double(constraints["likelihood"]);
+      constrain_coalescences_c(lineages, times, leaves, ne, bound, const_lower,
+                               const_upper, const_lineages, const_events);
 
     for (c = 0; c < total_leaves - 1; ++c) {
 
-      single_sample = sample_coalescence_time_c(const_lower(c), const_upper(c),
-                                                const_lineages(c), ne);
+      dl = double(const_lineages(c));
 
+      z = (ne / (dl - 1.0)) * (1.0 - std::exp(((dl - 1.0) / ne) *
+        (const_lower(c) - const_upper(c))));
 
+      sampled_times(n, c) = const_upper(c) + (ne / (dl - 1.0)) *
+        std::log(1.0 - ((dl - 1.0) / ne) * z * u(n, c));
 
-      sampled_times(n, c) = double(single_sample["time"]);
-      likelihood(n) *= double(single_sample["likelihood"]);
+      likelihood(n) *= (1.0 / z) * std::exp(((dl - 1.0) / ne) *
+        (sampled_times(n, c) - const_upper(c)));
 
     }
 
@@ -74,3 +80,4 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   return out;
 
 }
+
