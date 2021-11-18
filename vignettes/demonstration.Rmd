@@ -1,0 +1,59 @@
+---
+title: "Demonstration of the BoundedCoalescent package"
+date: '`r Sys.Date()`'
+output:
+  pdf_document: default
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Demonstration of the BoundedCoalescent package}
+  %\usepackage[utf8]{inputenc}
+---
+
+In this vignette we demonstrate the use of the BoundedCoalescent package.
+
+# Initialisation
+
+```{r}
+library(BoundedCoalescent)
+library(ape)
+set.seed(0)
+```
+
+# Simulation of a phylogeny
+
+
+The BoundedCoalescent package can simulate dated phylogenies under the bounded coalescent model.
+For example, here we simulate a tree with 5 leaves each in 2020, 2021 and 2022, with an effective population size $N_e=2$ and a bound in 2019:
+
+```{r}
+t=bounded_sample_phylo(c(2020,2021,2022),c(5,5,5),2,2019)
+plot(t$phylo)
+axisPhylo(1,backward = F)
+```
+
+# Probability of a phylogeny
+
+The BoundedCoalescent package can calculate the probability of a dated phylogeny under the bounded coalescent model.
+For example, here we generate a random tree with the ape package function rtree, set its root date to 2020:
+
+```{r}
+t=rtree(20)
+t$root.time=2020
+plot(t)
+axisPhylo(1,backward = F)
+```
+
+We can calculate the probability of this tree under the bounded coalescent model with effective population size  $N_e=2$ and a bound in 2019:
+
+```{r}
+bounded_likelihood_phylo(t,2,2019)
+```
+
+
+# Bound probability
+
+The BoundedCoalescent package can calculate the probability that unbounded coalescent tree will have its root after a certain date. For example, if we consider a tree with five leaves in 2020 and five leaves in 2021, under the unbounded coalescent model with effective population size $N_e=2$, the probability that the root occurs after 2019 is:
+
+```{r}
+bounded_forward_algorithm(c(2020,2021),c(5,5),2,2019)$bound_probability
+```

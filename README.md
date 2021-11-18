@@ -20,6 +20,7 @@ The package can then be loaded using:
 
 ``` r
 library(BoundedCoalescent)
+library(ape)
 ```
 
 ## Quick usage
@@ -28,7 +29,6 @@ Let’s simulate a tree with 5 leaves in 2020 plus 5 leaves in 2021, with
 an effective population size \(N_e=2\) and a bound in 2019:
 
 ``` r
-library(ape)
 t=bounded_sample_phylo(c(2020,2021),c(5,5),2,2019)
 plot(t$phylo)
 axisPhylo(1,backward = F)
@@ -40,7 +40,6 @@ Let’s calculate the probability of a random rtree with root in 2020,
 effective population size \(N_e=2\) and a bound in 2019:
 
 ``` r
-library(ape)
 t=rtree(10)
 t$root.time=2020
 plot(t)
