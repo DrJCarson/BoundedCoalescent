@@ -31,8 +31,10 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
   Rcpp::IntegerVector lineages(times.size() + 1);
 
   Rcpp::List constraints;
-  Rcpp::NumericVector const_lower, const_upper;
-  Rcpp::IntegerVector const_lineages;
+  Rcpp::NumericVector const_lower(total_leaves - 1);
+  Rcpp::NumericVector const_upper(total_leaves - 1);
+  Rcpp::IntegerVector const_lineages(total_leaves - 1);
+  Rcpp::IntegerVector const_events(total_leaves - 1);
 
   Rcpp::List single_sample;
 
@@ -41,11 +43,16 @@ Rcpp::List sample_bounded_times_c(Rcpp::NumericVector times,
     likelihood(n) *=
       backward_sampler_c(forward_probs, times, leaves, ne, bound, lineages);
 
-    constraints = constrain_coalescences_c(lineages, times, leaves, ne, bound);
-    const_lower = constraints["time_lower"];
-    const_upper = constraints["time_upper"];
-    const_lineages = constraints["lineages"];
-    likelihood(n) *= double(constraints["likelihood"]);
+    likelihood(n) *=
+      constrain_coalescences_new_c(lineages, times, leaves, ne, bound,
+                                   const_lower, const_upper, const_lineages,
+                                   const_events);
+
+//    constraints = constrain_coalescences_c(lineages, times, leaves, ne, bound);
+//    const_lower = constraints["time_lower"];
+//    const_upper = constraints["time_upper"];
+//    const_lineages = constraints["lineages"];
+//    likelihood(n) *= double(constraints["likelihood"]);
 
     for (c = 0; c < total_leaves - 1; ++c) {
 

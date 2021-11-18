@@ -33,6 +33,17 @@ constrain_coalescences_c <- function(sample, times, leaves, ne, bound) {
     .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound)
 }
 
+#' Constrain coalescence events to unique time intervals
+#'
+#' @param sample Sample of number of lineages from backward sampler
+#' @param times Vector of ordered sampling times for leaves.
+#' @param leaves Number of leaves taken at each sampling time.
+#' @param ne Effective population size.
+#' @param bound Bound time.
+constrain_coalescences_new_c <- function(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events) {
+    .Call(`_BoundedCoalescent_constrain_coalescences_new_c`, sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events)
+}
+
 #' Sample a coalescence time within a specified interval
 #'
 #' @param time_lower Lower bound time of the interval.
