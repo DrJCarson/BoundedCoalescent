@@ -64,17 +64,6 @@ sample_bounded_times_c <- function(times, leaves, ne, bound, nsam = 1L) {
     .Call(`_BoundedCoalescent_sample_bounded_times_c`, times, leaves, ne, bound, nsam)
 }
 
-#' Calculate the likelihood under the bounded coalescence
-#'
-#' @param leaf_times Times that leaves are added.
-#' @param leaves Number of leaves at each time point.
-#' @param coalescence_times Times of coalescences.
-#' @param ne Effective population size.
-#' @param bound Bound time.
-bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne, bound) {
-    .Call(`_BoundedCoalescent_bounded_times_likelihood_c`, leaf_times, leaves, coalescence_times, ne, bound)
-}
-
 #' Rejection sampling coalescence times for the bounded coalescenct
 #'
 #' @param times Vector of ordered sampling times for leaves.
@@ -82,8 +71,8 @@ bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne
 #' @param ne Effective population size.
 #' @param bound Bound time.
 #' @param nsam Number of samples (deafault 1).
-rejection_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
-    .Call(`_BoundedCoalescent_rejection_bounded_times`, times, leaves, ne, bound, nsam)
+rejection_bounded_times_c <- function(times, leaves, ne, bound, nsam = 1L) {
+    .Call(`_BoundedCoalescent_rejection_bounded_times_c`, times, leaves, ne, bound, nsam)
 }
 
 #' Sample topology given coalescent times.
@@ -93,5 +82,16 @@ rejection_bounded_times <- function(times, leaves, ne, bound, nsam = 1L) {
 #' @param coalescence_times Vector of ordered coalescence times.
 sample_topology_c <- function(leaf_times, leaves, coalescence_times) {
     .Call(`_BoundedCoalescent_sample_topology_c`, leaf_times, leaves, coalescence_times)
+}
+
+#' Calculate the likelihood under the bounded coalescence
+#'
+#' @param leaf_times Times that leaves are added.
+#' @param leaves Number of leaves at each time point.
+#' @param coalescence_times Times of coalescences.
+#' @param ne Effective population size.
+#' @param bound Bound time.
+bounded_times_likelihood_c <- function(leaf_times, leaves, coalescence_times, ne, bound) {
+    .Call(`_BoundedCoalescent_bounded_times_likelihood_c`, leaf_times, leaves, coalescence_times, ne, bound)
 }
 

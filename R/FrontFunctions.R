@@ -156,11 +156,11 @@ bounded_sample_times <- function(t, l, ne, b, nsam = 1, method = "direct") {
 
   } else if(method == "rejection") {
 
-    full_sample <- rejection_bounded_times(as.numeric(ordered_t),
-                                           as.integer(ordered_l),
-                                           as.numeric(ne),
-                                           as.numeric(b),
-                                           as.integer(nsam))
+    full_sample <- rejection_bounded_times_c(as.numeric(ordered_t),
+                                             as.integer(ordered_l),
+                                             as.numeric(ne),
+                                             as.numeric(b),
+                                             as.integer(nsam))
 
   }
 
@@ -311,11 +311,11 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
   } else if(method == "rejection") {
 
-    times_sample <- rejection_bounded_times(as.numeric(ordered_t),
-                                            as.integer(ordered_l),
-                                            as.numeric(ne),
-                                            as.numeric(b),
-                                            as.integer(nsam))
+    times_sample <- rejection_bounded_times_c(as.numeric(ordered_t),
+                                              as.integer(ordered_l),
+                                              as.numeric(ne),
+                                              as.numeric(b),
+                                              as.integer(nsam))
 
   }
 
