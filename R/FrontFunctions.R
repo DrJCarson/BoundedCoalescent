@@ -246,6 +246,7 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 }
 
 
+
 #' Sample a phylogeny under the bounded coalescent
 #'
 #' @param t Vector of leaf sampling times.
@@ -321,7 +322,6 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
   mphylo <- vector("list", nsam)
   mlikelihood <- numeric(nsam)
-  mnodes <- vector("list", nsam)
 
   if (missing(tip.label)) {
 
@@ -341,15 +341,8 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
                                          as.integer(ordered_l),
                                          as.numeric(times_sample$times[i,]))
 
-    nodes <- data.frame(node = 1:(2 * sum(l) - 1),
-                             time = topology_sample$times,
-                             ancestor = topology_sample$ancestors)
-
-    mnodes[[i]] <- nodes
-
     edge <- topology_sample$edge
-    edge_length <- topology_sample$times[topology_sample$edge[,2]] -
-      topology_sample$times[topology_sample$edge[,1]]
+    edge_length <- topology_sample$edge_length
 
     root_time <- min(times_sample$times[i,])
 
@@ -385,9 +378,7 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
     return(list(phylo = phylo_sample,
                 likelihood = phylo_likelihood,
-                coalescence_times = c(times_sample$times),
-                nodes = nodes
-    ))
+                coalescence_times = c(times_sample$times)))
 
   } else {
 
@@ -395,9 +386,7 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
     return(list(phylo = mphylo,
                 likelihood = mlikelihood,
-                coalescence_times = times_sample$times,
-                nodes = mnodes
-    ))
+                coalescence_times = times_sample$times))
 
   }
 

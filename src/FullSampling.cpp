@@ -204,9 +204,9 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
   // Internal node ancestors
   Rcpp::IntegerVector edge(4 * (total_leaves - 1));
   edge.attr("dim") = Rcpp::Dimension(2 * (total_leaves - 1), 2);
+  Rcpp::NumericVector edge_length(2 * (total_leaves - 1));
 
   // Node ancestors and times
-  Rcpp::IntegerVector node_ancestors(2 * total_leaves - 1);
   Rcpp::NumericVector node_times(2 * total_leaves - 1);
 
   // Counters
@@ -266,7 +266,7 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
       edge(2 * c + 1, 0) = n_index + 1;
       edge(2 * c + 1, 1) = anc_1 + 1;
 
-      node_ancestors(anc_1) = n_index + 1;
+      edge_length(2 * c + 1) = node_times(anc_1) - coalescence_times(c);
 
       likelihood *= 2.0 / double(total_active_nodes);
 
@@ -287,7 +287,7 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
       edge(2 * c, 0) = n_index + 1;
       edge(2 * c, 1) = anc_2 + 1;
 
-      node_ancestors(anc_2) = n_index + 1;
+      edge_length(2 * c) = node_times(anc_2) - coalescence_times(c);
 
       likelihood *= 1.0 / double(total_active_nodes);
 
@@ -318,15 +318,11 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
 
   }
 
-  Rcpp::List out = Rcpp::List::create(Rcpp::Named("times") = node_times,
-                                      Rcpp::Named("ancestors") = node_ancestors,
-                                      Rcpp::Named("edge") = edge,
+  Rcpp::List out = Rcpp::List::create(Rcpp::Named("edge") = edge,
+                                      Rcpp::Named("edge_length") = edge_length,
                                       Rcpp::Named("likelihood") = likelihood);
 
   return out;
 
 }
-
-
-
 

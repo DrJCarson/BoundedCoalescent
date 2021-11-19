@@ -42,5 +42,4 @@ Rcpp::List sample_topology_c(Rcpp::NumericVector leaf_times,
                              Rcpp::IntegerVector leaves,
                              Rcpp::NumericVector coalescence_times);
 
-
 #endif
