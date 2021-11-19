@@ -344,7 +344,7 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
     edge <- topology_sample$edge
     edge_length <- topology_sample$edge_length
 
-    root_time <- min(times_sample$times[i,])
+    root_time <- times_sample$times[i,1]
 
     if (is.finite(b)) {
 
