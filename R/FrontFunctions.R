@@ -79,10 +79,14 @@ bounded_forward_algorithm <- function(t, l, ne, b) {
 
   }
 
-  forward_probs <- forward_algorithm_c(as.numeric(t),
-                                       as.integer(l),
-                                       as.numeric(ne),
-                                       as.numeric(b))
+  forward_probs <- array(numeric(sum(l) * (length(t) + 1)),
+                         dim = c(sum(l), (length(t) + 1)))
+
+  colnames(forward_probs) <- c("t*", paste("t", 1:length(times), sep=""))
+  rownames(forward_probs) <- c(paste("P(", 1:sum(leaves), ")", sep=""))
+
+  forward_algorithm_c(as.numeric(t), as.integer(l), as.numeric(ne),
+                      as.numeric(b), forward_probs)
 
   return(list(probabilities = forward_probs,
               bound_probability = forward_probs[1, 1]))
@@ -152,11 +156,11 @@ bounded_sample_times <- function(t, l, ne, b, nsam = 1, method = "direct") {
 
   } else if(method == "rejection") {
 
-    full_sample <- rejection_bounded_times(as.numeric(ordered_t),
-                                           as.integer(ordered_l),
-                                           as.numeric(ne),
-                                           as.numeric(b),
-                                           as.integer(nsam))
+    full_sample <- rejection_bounded_times_c(as.numeric(ordered_t),
+                                             as.integer(ordered_l),
+                                             as.numeric(ne),
+                                             as.numeric(b),
+                                             as.integer(nsam))
 
   }
 
@@ -242,6 +246,7 @@ bounded_likelihood <- function(t, l, c, ne, b, topology = T) {
 }
 
 
+
 #' Sample a phylogeny under the bounded coalescent
 #'
 #' @param t Vector of leaf sampling times.
@@ -307,17 +312,16 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
   } else if(method == "rejection") {
 
-    times_sample <- rejection_bounded_times(as.numeric(ordered_t),
-                                            as.integer(ordered_l),
-                                            as.numeric(ne),
-                                            as.numeric(b),
-                                            as.integer(nsam))
+    times_sample <- rejection_bounded_times_c(as.numeric(ordered_t),
+                                              as.integer(ordered_l),
+                                              as.numeric(ne),
+                                              as.numeric(b),
+                                              as.integer(nsam))
 
   }
 
   mphylo <- vector("list", nsam)
   mlikelihood <- numeric(nsam)
-  mnodes <- vector("list", nsam)
 
   if (missing(tip.label)) {
 
@@ -337,17 +341,10 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
                                          as.integer(ordered_l),
                                          as.numeric(times_sample$times[i,]))
 
-    nodes <- data.frame(node = 1:(2 * sum(l) - 1),
-                             time = topology_sample$times,
-                             ancestor = topology_sample$ancestors)
-
-    mnodes[[i]] <- nodes
-
     edge <- topology_sample$edge
-    edge_length <- topology_sample$times[topology_sample$edge[,2]] -
-      topology_sample$times[topology_sample$edge[,1]]
+    edge_length <- topology_sample$edge_length
 
-    root_time <- min(times_sample$times[i,])
+    root_time <- times_sample$times[i,1]
 
     if (is.finite(b)) {
 
@@ -381,9 +378,7 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
     return(list(phylo = phylo_sample,
                 likelihood = phylo_likelihood,
-                coalescence_times = c(times_sample$times),
-                nodes = nodes
-    ))
+                coalescence_times = c(times_sample$times)))
 
   } else {
 
@@ -391,9 +386,7 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
     return(list(phylo = mphylo,
                 likelihood = mlikelihood,
-                coalescence_times = times_sample$times,
-                nodes = mnodes
-    ))
+                coalescence_times = times_sample$times))
 
   }
 

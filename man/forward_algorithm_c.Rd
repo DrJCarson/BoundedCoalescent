@@ -4,7 +4,7 @@
 \alias{forward_algorithm_c}
 \title{Forward Algorithm for the Bounded Coalescent}
 \usage{
-forward_algorithm_c(times, leaves, ne, bound)
+forward_algorithm_c(times, leaves, ne, bound, forward_probs)
 }
 \arguments{
 \item{times}{Vector of ordered sampling times for leaves.}
@@ -14,6 +14,8 @@ forward_algorithm_c(times, leaves, ne, bound)
 \item{ne}{Effective population size.}
 
 \item{bound}{Bound time.}
+
+\item{forward_probs}{Array to store probabilities.}
 }
 \description{
 Calculate the forward probabilities for the bounded coalescent.

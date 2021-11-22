@@ -1,6 +1,5 @@
 #include <Rcpp.h>
-#include "HomochronousProbabilities.h"
-#include "ForwardAlgorithm.h"
+#include "FFBS.h"
 
 double bounded_times_likelihood_c(Rcpp::NumericVector leaf_times,
                                   Rcpp::IntegerVector leaves,
@@ -93,8 +92,13 @@ double bounded_times_likelihood_c(Rcpp::NumericVector leaf_times,
 
   }
 
-  Rcpp::NumericVector forward_probs = forward_algorithm_c(leaf_times, leaves, ne,
-                                                         bound);
+  int total_leaves = Rcpp::sum(leaves);
+
+  Rcpp::NumericVector forward_probs(total_leaves * (leaf_times.size() + 1));
+  forward_probs.attr("dim") =
+    Rcpp::Dimension(total_leaves, (leaf_times.size() + 1));
+
+  forward_algorithm_c(leaf_times, leaves, ne, bound, forward_probs);
 
   likelihood /= forward_probs(0, 0);
 
