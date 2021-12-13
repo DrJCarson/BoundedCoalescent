@@ -8,6 +8,12 @@
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param ne Effective population size.
 #' @param bound Bound time.
+#' @param const_lower Lower bound times for each coalescence event.
+#' @param const_upper Upper bound times for each coalescence event.
+#' @param const_lineages Number of lineages at the start of the interval.
+#' @param const_events Number of coalescence events in the interval.
+#' @param norm_tol Threshold to use approximate sampling due to loss of
+#' significance.
 constrain_coalescences_c <- function(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events, norm_tol = 1.0e-10) {
     .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events, norm_tol)
 }
@@ -48,6 +54,7 @@ forward_algorithm_c <- function(times, leaves, ne, bound, forward_probs) {
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param ne Effective population size.
 #' @param bound Bound time.
+#' @param lineages Vector to store sample.
 #' @param bound_size Number of lineages at the bound (default 1).
 backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, lineages, bound_size = 1L) {
     .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, lineages, bound_size)

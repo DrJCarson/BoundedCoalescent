@@ -42,6 +42,7 @@ void forward_algorithm_c(Rcpp::NumericVector times,
 //' @param leaves Number of leaves taken at each sampling time.
 //' @param ne Effective population size.
 //' @param bound Bound time.
+//' @param lineages Vector to store sample.
 //' @param bound_size Number of lineages at the bound (default 1).
 // [[Rcpp::export]]
 double backward_sampler_c(Rcpp::NumericVector forward_probs,
