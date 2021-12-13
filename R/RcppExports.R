@@ -8,8 +8,8 @@
 #' @param leaves Number of leaves taken at each sampling time.
 #' @param ne Effective population size.
 #' @param bound Bound time.
-constrain_coalescences_c <- function(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events) {
-    .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events)
+constrain_coalescences_c <- function(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events, norm_tol = 1.0e-10) {
+    .Call(`_BoundedCoalescent_constrain_coalescences_c`, sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events, norm_tol)
 }
 
 #' Calculate coalescent probabilities (homochronous)
@@ -51,6 +51,16 @@ forward_algorithm_c <- function(times, leaves, ne, bound, forward_probs) {
 #' @param bound_size Number of lineages at the bound (default 1).
 backward_sampler_c <- function(forward_probs, times, leaves, ne, bound, lineages, bound_size = 1L) {
     .Call(`_BoundedCoalescent_backward_sampler_c`, forward_probs, times, leaves, ne, bound, lineages, bound_size)
+}
+
+#' Check for loss of significance in proabability calculation
+#'
+#' @param i Integer value for the starting number of lineages.
+#' @param j Integer value for the final number of lineages.
+#' @param dt Time period over which coalescences can occur.
+#' @param ne Effective population size.
+significance_loss <- function(i, j, dt, ne) {
+    .Call(`_BoundedCoalescent_significance_loss`, i, j, dt, ne)
 }
 
 #' Sample coalescence times for the bounded coalescenct

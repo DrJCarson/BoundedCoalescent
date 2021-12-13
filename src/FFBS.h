@@ -52,4 +52,13 @@ double backward_sampler_c(Rcpp::NumericVector forward_probs,
                           Rcpp::IntegerVector lineages,
                           int bound_size = 1);
 
+//' Check for loss of significance in proabability calculation
+//'
+//' @param i Integer value for the starting number of lineages.
+//' @param j Integer value for the final number of lineages.
+//' @param dt Time period over which coalescences can occur.
+//' @param ne Effective population size.
+// [[Rcpp::export]]
+double significance_loss(int i, int j, double dt, double ne);
+
 #endif

@@ -13,7 +13,8 @@ constrain_coalescences_c(
   const_lower,
   const_upper,
   const_lineages,
-  const_events
+  const_events,
+  norm_tol = 1e-10
 )
 }
 \arguments{

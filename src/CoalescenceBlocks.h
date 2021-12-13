@@ -19,7 +19,8 @@ double constrain_coalescences_c(Rcpp::IntegerVector sample,
                                 Rcpp::NumericVector const_lower,
                                 Rcpp::NumericVector const_upper,
                                 Rcpp::IntegerVector const_lineages,
-                                Rcpp::IntegerVector const_events);
+                                Rcpp::IntegerVector const_events,
+                                double norm_tol = 1.0e-10);
 
 
 

@@ -20,10 +20,16 @@ double homochronous_probability(int i, int j, double dt, double ne) {
 
   }
 
+  if (i == 1 && j == 1) {
+
+    return 1.0;
+
+  }
+
   if (j == 1) {
 
     // Initialise total probability
-    prob_total = 1.0;
+    prob_total = 0.0;
 
     for (k = 2; k <= i; ++k) {
 
@@ -47,10 +53,10 @@ double homochronous_probability(int i, int j, double dt, double ne) {
       }
 
       // Calculate exponential
-      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
+      prob_increment *= 1.0 - std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
 
       // Update total probability
-      prob_total -= prob_increment;
+      prob_total += prob_increment;
 
     }
 
@@ -250,5 +256,117 @@ double backward_sampler_c(Rcpp::NumericVector forward_probs,
 
   // Return likelihood
   return likelihood;
+
+}
+
+
+// Determine loss of significant figures in probability calculations
+double significance_loss(int i, int j, double dt, double ne) {
+
+  // Counters
+  int k, l;
+
+  // Double copies of counters
+  double dk, dl;
+
+  // Total and incremental probabilities
+  double prob_total, prob_increment, max_increment = 0.0;
+
+  // Check that inputs are valid
+  if (i <= 0 || j <= 0 || i < j || dt < 0 || ne <= 0) {
+
+    return 1.0;
+
+  }
+
+  if (i == 1 && j == 1) {
+
+    return 1.0;
+
+  }
+
+  if (j == 1) {
+
+    // Initialise total probability
+    prob_total = 0.0;
+
+    for (k = 2; k <= i; ++k) {
+
+      dk = double(k);
+
+      // Initialise probability increment
+      prob_increment = 1.0;
+
+      for (l = 2; l <= i; ++l) {
+
+        dl = double(l);
+
+        // Calculate coefficients
+        if (l != k) {
+
+          prob_increment *= (dl * (dl - 1.0)) /
+            (dl * (dl - 1.0) - dk * (dk - 1.0));
+
+        }
+
+      }
+
+      // Calculate exponential
+      prob_increment *= 1.0 - std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
+
+      if (max_increment < std::abs(prob_increment)) {
+
+        max_increment = std::abs(prob_increment);
+
+      }
+
+      // Update total probability
+      prob_total += prob_increment;
+
+    }
+
+  } else{
+
+    // Initialise total probability
+    prob_total = 0.0;
+
+    for (k = j; k <= i; ++k) {
+
+      dk = double(k);
+
+      // Initialise probability increment
+      prob_increment = (dk * (dk - 1.0)) / (double(j) * (double(j) - 1.0));
+
+      for (l = j; l <= i; ++l) {
+
+        dl = double(l);
+
+        // Calculate coefficients
+        if (l != k) {
+
+          prob_increment *= (dl * (dl - 1.0)) /
+            (dl * (dl - 1.0) - dk * (dk - 1.0));
+
+        }
+
+      }
+
+      // Calculate exponential
+      prob_increment *= std::exp(- ((dk * (dk - 1.0)) / (2.0 * ne)) * dt);
+
+      if (max_increment < std::abs(prob_increment)) {
+
+        max_increment = std::abs(prob_increment);
+
+      }
+
+      // Update total probability
+      prob_total += prob_increment;
+
+    }
+
+  }
+
+  return prob_total / max_increment;
 
 }
