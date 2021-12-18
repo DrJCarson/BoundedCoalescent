@@ -10,7 +10,8 @@ double constrain_coalescences_c(Rcpp::IntegerVector sample,
                                 Rcpp::NumericVector const_lower,
                                 Rcpp::NumericVector const_upper,
                                 Rcpp::IntegerVector const_lineages,
-                                Rcpp::IntegerVector const_events) {
+                                Rcpp::IntegerVector const_events,
+                                double norm_tol) {
 
   // Total the leaves
   int total_leaves = Rcpp::sum(leaves);
@@ -32,6 +33,9 @@ double constrain_coalescences_c(Rcpp::IntegerVector sample,
 
   // Sub-interval information
   double dt, mid_time, prob_lhs, prob_rhs, prob_norm;
+
+  // Loss of significance from the probability calculation
+  double sig_loss;
 
   // Initial constraints, bound interval
   events = sample(1) - sample(0);
@@ -73,39 +77,25 @@ double constrain_coalescences_c(Rcpp::IntegerVector sample,
       // Check for interrupt
       Rcpp::checkUserInterrupt();
 
-
       events = const_events(c);
 
       dt = 0.5 * (const_upper(c) - const_lower(c));
       mid_time = const_upper(c) - dt;
 
-      u = R::runif(0.0, 1.0);
-
-      events_lhs = 0;
-      events_rhs = events - events_lhs;
-
-      prob_rhs = homochronous_probability(const_lineages(c),
-                                          const_lineages(c) - events_rhs,
-                                          dt, ne);
-
-      prob_lhs = homochronous_probability(const_lineages(c) - events_rhs,
-                                          const_lineages(c) - events,
-                                          dt, ne);
-
       prob_norm = homochronous_probability(const_lineages(c),
                                            const_lineages(c) - events,
                                            2.0 * dt, ne);
 
-      sum_prob = (prob_lhs * prob_rhs) / prob_norm;
+      sig_loss = significance_loss(const_lineages(c),
+                                   const_lineages(c) - events,
+                                   dt, ne);
 
-      while (u > sum_prob) {
+      if (sig_loss > norm_tol) {
 
-        // Check for interrupt
-        Rcpp::checkUserInterrupt();
+        u = R::runif(0.0, 1.0);
 
-
-        ++events_lhs;
-        --events_rhs;
+        events_lhs = 0;
+        events_rhs = events - events_lhs;
 
         prob_rhs = homochronous_probability(const_lineages(c),
                                             const_lineages(c) - events_rhs,
@@ -115,15 +105,38 @@ double constrain_coalescences_c(Rcpp::IntegerVector sample,
                                             const_lineages(c) - events,
                                             dt, ne);
 
-        prob_norm = homochronous_probability(const_lineages(c),
-                                             const_lineages(c) - events,
-                                             2.0 * dt, ne);
+        sum_prob = (prob_lhs * prob_rhs) / prob_norm;
 
-        sum_prob += (prob_lhs * prob_rhs) / prob_norm;
+        while (u > sum_prob) {
+
+          // Check for interrupt
+          Rcpp::checkUserInterrupt();
+
+          ++events_lhs;
+          --events_rhs;
+
+          prob_rhs = homochronous_probability(const_lineages(c),
+                                              const_lineages(c) - events_rhs,
+                                              dt, ne);
+
+          prob_lhs = homochronous_probability(const_lineages(c) - events_rhs,
+                                              const_lineages(c) - events,
+                                              dt, ne);
+
+          sum_prob += (prob_lhs * prob_rhs) / prob_norm;
+
+        }
+
+        likelihood *= (prob_lhs * prob_rhs) / prob_norm;
+
+      } else {
+
+        events_lhs = int(events / 2);
+        events_rhs = events - events_lhs;
+
+        likelihood = 0.0;
 
       }
-
-      likelihood *= (prob_lhs * prob_rhs) / prob_norm;
 
       for (m = 0; m < events; ++m) {
 

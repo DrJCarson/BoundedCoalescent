@@ -13,7 +13,8 @@ constrain_coalescences_c(
   const_lower,
   const_upper,
   const_lineages,
-  const_events
+  const_events,
+  norm_tol = 1e-10
 )
 }
 \arguments{
@@ -26,6 +27,17 @@ constrain_coalescences_c(
 \item{ne}{Effective population size.}
 
 \item{bound}{Bound time.}
+
+\item{const_lower}{Lower bound times for each coalescence event.}
+
+\item{const_upper}{Upper bound times for each coalescence event.}
+
+\item{const_lineages}{Number of lineages at the start of the interval.}
+
+\item{const_events}{Number of coalescence events in the interval.}
+
+\item{norm_tol}{Threshold to use approximate sampling due to loss of
+significance.}
 }
 \description{
 Constrain coalescence events to unique time intervals

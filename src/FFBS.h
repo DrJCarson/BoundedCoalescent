@@ -42,6 +42,7 @@ void forward_algorithm_c(Rcpp::NumericVector times,
 //' @param leaves Number of leaves taken at each sampling time.
 //' @param ne Effective population size.
 //' @param bound Bound time.
+//' @param lineages Vector to store sample.
 //' @param bound_size Number of lineages at the bound (default 1).
 // [[Rcpp::export]]
 double backward_sampler_c(Rcpp::NumericVector forward_probs,
@@ -51,5 +52,14 @@ double backward_sampler_c(Rcpp::NumericVector forward_probs,
                           double bound,
                           Rcpp::IntegerVector lineages,
                           int bound_size = 1);
+
+//' Check for loss of significance in proabability calculation
+//'
+//' @param i Integer value for the starting number of lineages.
+//' @param j Integer value for the final number of lineages.
+//' @param dt Time period over which coalescences can occur.
+//' @param ne Effective population size.
+// [[Rcpp::export]]
+double significance_loss(int i, int j, double dt, double ne);
 
 #endif

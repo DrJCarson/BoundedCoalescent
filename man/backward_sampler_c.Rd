@@ -25,6 +25,8 @@ backward_sampler_c(
 
 \item{bound}{Bound time.}
 
+\item{lineages}{Vector to store sample.}
+
 \item{bound_size}{Number of lineages at the bound (default 1).}
 }
 \description{

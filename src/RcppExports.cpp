@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // constrain_coalescences_c
-double constrain_coalescences_c(Rcpp::IntegerVector sample, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, Rcpp::NumericVector const_lower, Rcpp::NumericVector const_upper, Rcpp::IntegerVector const_lineages, Rcpp::IntegerVector const_events);
-RcppExport SEXP _BoundedCoalescent_constrain_coalescences_c(SEXP sampleSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP const_lowerSEXP, SEXP const_upperSEXP, SEXP const_lineagesSEXP, SEXP const_eventsSEXP) {
+double constrain_coalescences_c(Rcpp::IntegerVector sample, Rcpp::NumericVector times, Rcpp::IntegerVector leaves, double ne, double bound, Rcpp::NumericVector const_lower, Rcpp::NumericVector const_upper, Rcpp::IntegerVector const_lineages, Rcpp::IntegerVector const_events, double norm_tol);
+RcppExport SEXP _BoundedCoalescent_constrain_coalescences_c(SEXP sampleSEXP, SEXP timesSEXP, SEXP leavesSEXP, SEXP neSEXP, SEXP boundSEXP, SEXP const_lowerSEXP, SEXP const_upperSEXP, SEXP const_lineagesSEXP, SEXP const_eventsSEXP, SEXP norm_tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type const_upper(const_upperSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type const_lineages(const_lineagesSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type const_events(const_eventsSEXP);
-    rcpp_result_gen = Rcpp::wrap(constrain_coalescences_c(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events));
+    Rcpp::traits::input_parameter< double >::type norm_tol(norm_tolSEXP);
+    rcpp_result_gen = Rcpp::wrap(constrain_coalescences_c(sample, times, leaves, ne, bound, const_lower, const_upper, const_lineages, const_events, norm_tol));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -71,6 +72,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type lineages(lineagesSEXP);
     Rcpp::traits::input_parameter< int >::type bound_size(bound_sizeSEXP);
     rcpp_result_gen = Rcpp::wrap(backward_sampler_c(forward_probs, times, leaves, ne, bound, lineages, bound_size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// significance_loss
+double significance_loss(int i, int j, double dt, double ne);
+RcppExport SEXP _BoundedCoalescent_significance_loss(SEXP iSEXP, SEXP jSEXP, SEXP dtSEXP, SEXP neSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    Rcpp::traits::input_parameter< int >::type j(jSEXP);
+    Rcpp::traits::input_parameter< double >::type dt(dtSEXP);
+    Rcpp::traits::input_parameter< double >::type ne(neSEXP);
+    rcpp_result_gen = Rcpp::wrap(significance_loss(i, j, dt, ne));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -134,10 +149,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BoundedCoalescent_constrain_coalescences_c", (DL_FUNC) &_BoundedCoalescent_constrain_coalescences_c, 9},
+    {"_BoundedCoalescent_constrain_coalescences_c", (DL_FUNC) &_BoundedCoalescent_constrain_coalescences_c, 10},
     {"_BoundedCoalescent_homochronous_probability", (DL_FUNC) &_BoundedCoalescent_homochronous_probability, 4},
     {"_BoundedCoalescent_forward_algorithm_c", (DL_FUNC) &_BoundedCoalescent_forward_algorithm_c, 5},
     {"_BoundedCoalescent_backward_sampler_c", (DL_FUNC) &_BoundedCoalescent_backward_sampler_c, 7},
+    {"_BoundedCoalescent_significance_loss", (DL_FUNC) &_BoundedCoalescent_significance_loss, 4},
     {"_BoundedCoalescent_sample_bounded_times_c", (DL_FUNC) &_BoundedCoalescent_sample_bounded_times_c, 5},
     {"_BoundedCoalescent_rejection_bounded_times_c", (DL_FUNC) &_BoundedCoalescent_rejection_bounded_times_c, 5},
     {"_BoundedCoalescent_sample_topology_c", (DL_FUNC) &_BoundedCoalescent_sample_topology_c, 3},
