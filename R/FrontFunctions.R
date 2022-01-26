@@ -327,7 +327,26 @@ bounded_sample_phylo <- function(t, l, ne, b, nsam = 1, tip.label, node.label,
 
     tip.label <- as.character(1:sum(l))
 
+  } else {
+
+    if (length(tip.label) == length(t)) {
+
+      tip.label <- rep(tip.label[leaf_order], ordered_l)
+
+    } else if (length(tip.label) == sum(l)) {
+
+      expanded_t <- rep(t, l)
+
+      tip.label <- tip.label[order(expanded_t)]
+
+    } else {
+
+      stop("tip.label is wrong length.")
+
+    }
+
   }
+
 
   if (missing(node.label)) {
 
